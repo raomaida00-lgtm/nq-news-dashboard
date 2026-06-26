@@ -224,6 +224,48 @@
       color: var(--blue);
     }
 
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 8px;
+    }
+
+    .tab-button {
+      min-height: 36px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: #435268;
+      padding: 0 12px;
+      font-weight: 850;
+    }
+
+    .tab-button:hover,
+    .tab-button:focus {
+      border-color: var(--line);
+      color: var(--blue);
+      outline: none;
+    }
+
+    .tab-button.active {
+      background: var(--blue-soft);
+      border-color: #b9d3e4;
+      color: var(--blue);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
     .workbench {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 320px;
@@ -477,6 +519,226 @@
       font-size: 18px;
     }
 
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .section-head p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      max-width: 82ch;
+    }
+
+    .month-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .month-title {
+      min-width: 150px;
+      text-align: center;
+      font-weight: 850;
+      color: #253244;
+    }
+
+    .calendar-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--line);
+    }
+
+    .weekday,
+    .calendar-day {
+      background: var(--panel);
+      min-width: 0;
+    }
+
+    .weekday {
+      padding: 9px 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .calendar-day {
+      min-height: 124px;
+      padding: 8px;
+      display: grid;
+      align-content: start;
+      gap: 6px;
+    }
+
+    .calendar-day.outside {
+      background: #f1f4f7;
+      color: #8a96a4;
+    }
+
+    .calendar-day.has-items {
+      box-shadow: inset 0 3px 0 var(--blue);
+    }
+
+    .calendar-day.selected {
+      outline: 2px solid var(--amber);
+      outline-offset: -2px;
+    }
+
+    .day-number {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .day-count {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .calendar-item {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--blue);
+      border-radius: 6px;
+      background: #fff;
+      color: #263445;
+      padding: 6px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 750;
+      overflow: hidden;
+    }
+
+    .calendar-item.critical { border-left-color: var(--crimson); }
+    .calendar-item.elevated { border-left-color: var(--amber); }
+    .calendar-item.context { border-left-color: var(--slate); }
+
+    .calendar-more {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .day-detail,
+    .data-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+    }
+
+    .day-detail h3,
+    .data-panel h3 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: #334155;
+    }
+
+    .day-list,
+    .data-cards {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-row {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel-soft);
+      padding: 10px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .mini-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 850;
+      color: #1d2938;
+    }
+
+    .data-layout {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .data-card {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel-soft);
+      padding: 10px;
+      display: grid;
+      gap: 5px;
+    }
+
+    .data-card strong {
+      font-size: 16px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+    }
+
+    th,
+    td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 12px;
+    }
+
+    th {
+      background: var(--panel-soft);
+      color: #435268;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    td {
+      color: #263445;
+    }
+
     .drawer-backdrop {
       position: fixed;
       inset: 0;
@@ -600,6 +862,8 @@
       .controls { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .workbench { grid-template-columns: 1fr; }
       .side-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .calendar-layout,
+      .data-layout { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 760px) {
@@ -613,6 +877,14 @@
       .triage,
       .controls,
       .side-panel { grid-template-columns: 1fr; }
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .month-controls { width: 100%; justify-content: space-between; }
+      .calendar-grid { grid-template-columns: 1fr; }
+      .weekday { display: none; }
+      .calendar-day { min-height: auto; }
       .card-head { grid-template-columns: 1fr; }
       .score-block { text-align: left; }
       .kv { grid-template-columns: 1fr; }
@@ -690,38 +962,123 @@
       <button class="reset-button" id="resetButton" type="button">Reset</button>
     </section>
 
-    <div class="workbench">
-      <section class="queue" aria-label="Ranked news queue">
-        <div class="status-line">
-          <span id="resultStatus">Loading ranked queue...</span>
-          <span id="dataStatus"></span>
-        </div>
-        <div id="rowsBody"></div>
-        <div class="empty hidden" id="emptyState">
-          <h2>No rows to display</h2>
-          <div>Adjust filters or refresh the data pull.</div>
-        </div>
-      </section>
+    <nav class="tabs" aria-label="Dashboard views">
+      <button class="tab-button active" type="button" data-view="deskView">Main Desk</button>
+      <button class="tab-button" type="button" data-view="calendarView">Calendar Watch</button>
+      <button class="tab-button" type="button" data-view="dataView">Data Layer</button>
+      <button class="tab-button" type="button" data-view="coverageView">Coverage</button>
+    </nav>
 
-      <aside class="side-panel" aria-label="Dashboard widgets">
-        <section class="panel">
-          <h2>NQ Relevance Ladder</h2>
-          <div class="bar-list" id="attentionMix"></div>
+    <section class="view active" id="deskView" aria-label="Main trader desk">
+      <div class="workbench">
+        <section class="queue" aria-label="Ranked news queue">
+          <div class="status-line">
+            <span id="resultStatus">Loading ranked queue...</span>
+            <span id="dataStatus"></span>
+          </div>
+          <div id="rowsBody"></div>
+          <div class="empty hidden" id="emptyState">
+            <h2>No rows to display</h2>
+            <div>Adjust filters or refresh the data pull.</div>
+          </div>
         </section>
-        <section class="panel">
-          <h2>Channel Heatmap</h2>
-          <div class="side-list" id="sourceCoverage"></div>
+
+        <aside class="side-panel" aria-label="Dashboard widgets">
+          <section class="panel">
+            <h2>NQ Relevance Ladder</h2>
+            <div class="bar-list" id="attentionMix"></div>
+          </section>
+          <section class="panel">
+            <h2>Channel Heatmap</h2>
+            <div class="side-list" id="sourceCoverage"></div>
+          </section>
+          <section class="panel">
+            <h2>Upcoming Tape</h2>
+            <div class="side-list" id="modelCoverage"></div>
+          </section>
+          <section class="panel">
+            <h2>Data Trust</h2>
+            <div class="side-list" id="trustStack"></div>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="calendarView" aria-label="Monthly calendar watch">
+      <div class="section-head">
+        <div>
+          <h2>Monthly Calendar Watch</h2>
+          <p>Future dated source rows are placed on the date the item is scheduled. These are watch items, not known event outcomes.</p>
+        </div>
+        <div class="month-controls">
+          <button class="reset-button" id="prevMonth" type="button" aria-label="Previous month">&lt;</button>
+          <span class="month-title" id="monthTitle">Loading</span>
+          <button class="reset-button" id="nextMonth" type="button" aria-label="Next month">&gt;</button>
+        </div>
+      </div>
+      <div class="calendar-layout">
+        <div class="calendar-grid" id="calendarGrid" aria-label="Calendar grid"></div>
+        <aside class="day-detail" aria-label="Selected day details">
+          <h3 id="dayDetailTitle">Select a date</h3>
+          <div class="day-list" id="dayDetailList"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="dataView" aria-label="Data layer">
+      <div class="section-head">
+        <div>
+          <h2>Data Layer</h2>
+          <p>Audit the exact source feeds, gate status, known-time coverage, provenance, model fields, and missing-evidence rows behind the trader view.</p>
+        </div>
+      </div>
+      <div class="data-layout">
+        <aside class="data-panel">
+          <h3>Dataset Inventory</h3>
+          <div class="data-cards" id="datasetInventory"></div>
+        </aside>
+        <section class="data-panel">
+          <h3>Row Contract</h3>
+          <div class="data-cards" id="dataContract"></div>
+          <br>
+          <h3>Filtered Rows</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Display</th>
+                  <th>Raw Headline</th>
+                  <th>Source</th>
+                  <th>Bucket</th>
+                  <th>Importance</th>
+                  <th>Known / URL</th>
+                </tr>
+              </thead>
+              <tbody id="dataRows"></tbody>
+            </table>
+          </div>
         </section>
-        <section class="panel">
-          <h2>Upcoming Tape</h2>
-          <div class="side-list" id="modelCoverage"></div>
+      </div>
+    </section>
+
+    <section class="view" id="coverageView" aria-label="Coverage and mix">
+      <div class="section-head">
+        <div>
+          <h2>Coverage Mix</h2>
+          <p>Use this lens to see whether the dashboard is mostly macro context, filings, official notices, or low-link background noise.</p>
+        </div>
+      </div>
+      <div class="data-layout">
+        <section class="data-panel">
+          <h3>Source Mix</h3>
+          <div class="bar-list" id="coverageSourceMix"></div>
         </section>
-        <section class="panel">
-          <h2>Data Trust</h2>
-          <div class="side-list" id="trustStack"></div>
+        <section class="data-panel">
+          <h3>Context Mix</h3>
+          <div class="bar-list" id="coverageContextMix"></div>
         </section>
-      </aside>
-    </div>
+      </div>
+    </section>
   </main>
 
   <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
@@ -748,7 +1105,10 @@
         dataset: "all",
         channel: "all",
         sort: "rankDesc"
-      }
+      },
+      activeView: "deskView",
+      calendarMonth: "",
+      selectedDate: ""
     };
 
     const el = {
@@ -773,6 +1133,19 @@
       sourceCoverage: document.getElementById("sourceCoverage"),
       modelCoverage: document.getElementById("modelCoverage"),
       trustStack: document.getElementById("trustStack"),
+      tabs: [...document.querySelectorAll(".tab-button")],
+      views: [...document.querySelectorAll(".view")],
+      prevMonth: document.getElementById("prevMonth"),
+      nextMonth: document.getElementById("nextMonth"),
+      monthTitle: document.getElementById("monthTitle"),
+      calendarGrid: document.getElementById("calendarGrid"),
+      dayDetailTitle: document.getElementById("dayDetailTitle"),
+      dayDetailList: document.getElementById("dayDetailList"),
+      datasetInventory: document.getElementById("datasetInventory"),
+      dataContract: document.getElementById("dataContract"),
+      dataRows: document.getElementById("dataRows"),
+      coverageSourceMix: document.getElementById("coverageSourceMix"),
+      coverageContextMix: document.getElementById("coverageContextMix"),
       drawer: document.getElementById("drawer"),
       drawerBackdrop: document.getElementById("drawerBackdrop"),
       drawerClose: document.getElementById("drawerClose"),
@@ -807,6 +1180,45 @@
         hour: "2-digit",
         minute: "2-digit"
       });
+    }
+
+    function parseDateKey(value) {
+      const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!match) return null;
+      return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    }
+
+    function dateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function monthKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      return `${year}-${month}`;
+    }
+
+    function addMonths(key, offset) {
+      const [year, month] = String(key || monthKey(new Date())).split("-").map(Number);
+      return monthKey(new Date(year, month - 1 + offset, 1));
+    }
+
+    function monthLabel(key) {
+      const [year, month] = String(key || monthKey(new Date())).split("-").map(Number);
+      return new Date(year, month - 1, 1).toLocaleString(undefined, { month: "long", year: "numeric" });
+    }
+
+    function rowCalendar(row) {
+      return ((row.event_interpretation || {}).calendar || {});
+    }
+
+    function upcomingRows(rows) {
+      return rows
+        .filter((row) => rowCalendar(row).status === "upcoming" && rowCalendar(row).scheduled_date)
+        .sort((a, b) => String(rowCalendar(a).scheduled_date).localeCompare(String(rowCalendar(b).scheduled_date)) || b._score - a._score);
     }
 
     function timeValue(value) {
@@ -1004,6 +1416,157 @@
       `;
     }
 
+    function ensureCalendarState(rows) {
+      const upcoming = upcomingRows(rows);
+      if (!state.calendarMonth) {
+        const first = upcoming[0] && parseDateKey(rowCalendar(upcoming[0]).scheduled_date);
+        state.calendarMonth = monthKey(first || new Date());
+      }
+      const selectedStillVisible = upcoming.some((row) => rowCalendar(row).scheduled_date === state.selectedDate);
+      if (!state.selectedDate || !selectedStillVisible) {
+        const inMonth = upcoming.find((row) => String(rowCalendar(row).scheduled_date).startsWith(state.calendarMonth));
+        state.selectedDate = inMonth ? rowCalendar(inMonth).scheduled_date : "";
+      }
+    }
+
+    function renderMiniRow(row) {
+      const cal = rowCalendar(row);
+      const source = row.source_url ? `<a href="${escapeHtml(row.source_url)}" target="_blank" rel="noopener">Source</a>` : "No source URL";
+      return `
+        <div class="mini-row">
+          <p class="mini-title">${escapeHtml(row._displayTitle || "Untitled row")}</p>
+          <div class="chip-row">
+            <span class="chip ${statusChip(row._status)}">${escapeHtml((row.importance || {}).label || row._status)}</span>
+            <span class="chip">${escapeHtml(row.source_name || row.source || "Unknown")}</span>
+            <span class="chip">${escapeHtml(row.dataset || "unknown")}</span>
+          </div>
+          ${renderBullets((row.nq_context_bullets || (row.event_interpretation || {}).nq_context_bullets || []).slice(0, 3))}
+          <div class="source-row">
+            <span>${escapeHtml(cal.scheduled_time_text || cal.scheduled_text || "time not specified")}</span>
+            <span>${source}</span>
+            <button class="row-action" type="button" data-row-id="${escapeHtml(row._id)}">Details</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCalendar(rows) {
+      const upcoming = upcomingRows(rows);
+      ensureCalendarState(rows);
+      el.monthTitle.textContent = monthLabel(state.calendarMonth);
+      const grouped = upcoming.reduce((map, row) => {
+        const key = rowCalendar(row).scheduled_date;
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(row);
+        return map;
+      }, new Map());
+      const [year, month] = state.calendarMonth.split("-").map(Number);
+      const first = new Date(year, month - 1, 1);
+      const start = new Date(year, month - 1, 1 - first.getDay());
+      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => `<div class="weekday">${day}</div>`).join("");
+      const cells = [];
+      for (let i = 0; i < 42; i += 1) {
+        const date = new Date(start);
+        date.setDate(start.getDate() + i);
+        const key = dateKey(date);
+        const items = (grouped.get(key) || []).sort((a, b) => b._score - a._score);
+        const outside = date.getMonth() !== month - 1;
+        const selected = key === state.selectedDate;
+        const buttons = items.slice(0, 3).map((row) => `
+          <button class="calendar-item ${severityClass(row)}" type="button" data-row-id="${escapeHtml(row._id)}" title="${escapeHtml(row.headline || row._displayTitle || "")}">
+            ${escapeHtml(row._displayTitle || "Watch item")}
+          </button>
+        `).join("");
+        cells.push(`
+          <div class="calendar-day ${outside ? "outside" : ""} ${items.length ? "has-items" : ""} ${selected ? "selected" : ""}" data-day="${key}">
+            <div class="day-number">
+              <span>${date.getDate()}</span>
+              ${items.length ? `<span class="day-count">${items.length}</span>` : ""}
+            </div>
+            ${buttons}
+            ${items.length > 3 ? `<div class="calendar-more">+${items.length - 3} more</div>` : ""}
+          </div>
+        `);
+      }
+      el.calendarGrid.innerHTML = weekdays + cells.join("");
+      const selectedItems = grouped.get(state.selectedDate) || [];
+      el.dayDetailTitle.textContent = state.selectedDate ? `${selectedItems.length} watch item${selectedItems.length === 1 ? "" : "s"} on ${state.selectedDate}` : "No watch date selected";
+      el.dayDetailList.innerHTML = selectedItems.length
+        ? selectedItems.map(renderMiniRow).join("")
+        : '<div class="empty"><h2>No future watch items</h2><div>Change filters or use month navigation.</div></div>';
+    }
+
+    function renderDataLayer(rows) {
+      const datasets = Array.isArray((state.raw || {}).datasets) ? state.raw.datasets : [];
+      el.datasetInventory.innerHTML = datasets.length ? datasets.map((item) => {
+        const gate = item.gate || {};
+        const pass = gate.overall_pass === true;
+        return `
+          <div class="data-card">
+            <strong>${escapeHtml(item.source || "unknown")} / ${escapeHtml(item.dataset || "unknown")}</strong>
+            <div class="chip-row">
+              <span class="chip">${escapeHtml(fmt(item.rows ?? gate.n_rows))} rows</span>
+              <span class="chip ${pass ? "chip-green" : "chip-crimson"}">Gate ${pass ? "pass" : "check"}</span>
+              <span class="chip">As of ${escapeHtml(formatTime(gate.as_of))}</span>
+            </div>
+            <div class="source-row">
+              <span>Warnings: ${escapeHtml(fmt((gate.warnings || []).length || 0))}</span>
+              <span>Failures: ${escapeHtml(fmt((gate.blocking_failures || []).length || 0))}</span>
+            </div>
+          </div>
+        `;
+      }).join("") : '<div class="empty"><h2>No dataset inventory</h2><div>The payload has no top-level datasets array.</div></div>';
+
+      const contract = [
+        ["Display title", "Short trader-readable title; raw official headline stays preserved in detail."],
+        ["Meaning bullets", "Plain-English phrases explaining what the row is."],
+        ["Why NQ cares", "Objective market channel, or explicit low-link context if there is no direct NQ path."],
+        ["Importance", "Derived or source-provided tier and score, with no directional trade forecast."],
+        ["Calendar", "Future watch rows use scheduled_date and remain labeled as watch items."],
+        ["Provenance", "Known-at, source URL, validation gate, raw hash, license, and adapter metadata."]
+      ];
+      const missingKnown = countWhere(rows, (r) => (r.quality || {}).pit_status !== "known_at_present");
+      const failedGate = countWhere(rows, (r) => (r.quality || {}).gate_pass === false);
+      el.dataContract.innerHTML = `
+        <div class="chip-row">
+          <span class="chip chip-green">Known-time OK ${rows.length - missingKnown}</span>
+          <span class="chip ${missingKnown ? "chip-crimson" : "chip-green"}">Known-time gaps ${missingKnown}</span>
+          <span class="chip ${failedGate ? "chip-crimson" : "chip-green"}">Gate failures ${failedGate}</span>
+          <span class="chip pill-edge">NO CERTIFIED EDGE</span>
+        </div>
+        ${contract.map(([title, body]) => `<div class="data-card"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(body)}</span></div>`).join("")}
+      `;
+
+      el.dataRows.innerHTML = rows.slice(0, 120).map((row) => {
+        const url = row.source_url ? `<a href="${escapeHtml(row.source_url)}" target="_blank" rel="noopener">source</a>` : "missing";
+        return `
+          <tr>
+            <td><button class="row-action" type="button" data-row-id="${escapeHtml(row._id)}">${escapeHtml(row._displayTitle || "Untitled")}</button></td>
+            <td>${escapeHtml(row.headline || "")}</td>
+            <td>${escapeHtml(row.source_name || row.source || "Unknown")}<br>${escapeHtml(row.dataset || "unknown")}</td>
+            <td>${escapeHtml((row._contextBucket || "context").replaceAll("_", " "))}</td>
+            <td>${escapeHtml((row.importance || {}).label || row._status)}<br>${Math.round(row._score)} attention</td>
+            <td>${escapeHtml(formatTime(row.known_at))}<br>${url}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderCoverage(rows) {
+      const sources = [...rows.reduce((map, row) => {
+        const key = row.source_name || row.source || "Unknown";
+        map.set(key, (map.get(key) || 0) + 1);
+        return map;
+      }, new Map()).entries()].sort((a, b) => b[1] - a[1]).slice(0, 12);
+      const contexts = [...rows.reduce((map, row) => {
+        const key = (row._contextBucket || "unclassified_context").replaceAll("_", " ");
+        map.set(key, (map.get(key) || 0) + 1);
+        return map;
+      }, new Map()).entries()].sort((a, b) => b[1] - a[1]).slice(0, 12);
+      renderBars(el.coverageSourceMix, sources, "var(--blue)");
+      renderBars(el.coverageContextMix, contexts, "var(--amber)");
+    }
+
     function renderCard(row) {
       const status = row._status;
       const score = Math.round(row._score);
@@ -1072,14 +1635,17 @@
       const rows = state.view;
       const total = state.rows.length;
       el.kpiReview.textContent = countWhere(state.rows, (r) => r._status === "Review now");
-      el.kpiWatch.textContent = countWhere(state.rows, (r) => r._status === "Watch");
+      el.kpiWatch.textContent = upcomingRows(state.rows).length;
       el.kpiPit.textContent = countWhere(state.rows, (r) => (r.quality || {}).pit_status === "known_at_present");
       el.kpiCoverage.textContent = new Set(state.rows.map((r) => r.source || r.source_name || "Unknown")).size;
       el.coverageNote.textContent = `${new Set(state.rows.map((r) => r.dataset || "unknown")).size} datasets`;
       el.resultStatus.textContent = `${rows.length} of ${total} rows shown, ranked by attention`;
       el.rowsBody.innerHTML = rows.map(renderCard).join("");
       el.emptyState.classList.toggle("hidden", rows.length > 0);
-      renderSideWidgets(state.rows);
+      renderSideWidgets(rows);
+      renderCalendar(rows);
+      renderDataLayer(rows);
+      renderCoverage(rows);
     }
 
     function kvRow(label, value) {
@@ -1220,6 +1786,13 @@
     }
 
     function bindEvents() {
+      el.tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          state.activeView = tab.dataset.view;
+          el.tabs.forEach((item) => item.classList.toggle("active", item === tab));
+          el.views.forEach((view) => view.classList.toggle("active", view.id === state.activeView));
+        });
+      });
       el.searchInput.addEventListener("input", (event) => {
         state.filters.search = event.target.value;
         applyFilters();
@@ -1237,12 +1810,43 @@
         populateFilters();
         applyFilters();
       });
+      el.prevMonth.addEventListener("click", () => {
+        state.calendarMonth = addMonths(state.calendarMonth, -1);
+        state.selectedDate = "";
+        renderCalendar(state.view);
+      });
+      el.nextMonth.addEventListener("click", () => {
+        state.calendarMonth = addMonths(state.calendarMonth, 1);
+        state.selectedDate = "";
+        renderCalendar(state.view);
+      });
+      el.calendarGrid.addEventListener("click", (event) => {
+        const rowButton = event.target.closest("[data-row-id]");
+        if (rowButton) {
+          const row = state.rows.find((item) => item._id === rowButton.dataset.rowId);
+          if (row) openDrawer(row);
+          return;
+        }
+        const day = event.target.closest("[data-day]");
+        if (day) {
+          state.selectedDate = day.dataset.day;
+          renderCalendar(state.view);
+        }
+      });
       el.rowsBody.addEventListener("click", (event) => {
         const button = event.target.closest("[data-row-id]");
         if (!button) return;
         const row = state.rows.find((item) => item._id === button.dataset.rowId);
         if (row) openDrawer(row);
       });
+      for (const target of [el.dayDetailList, el.dataRows]) {
+        target.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-row-id]");
+          if (!button) return;
+          const row = state.rows.find((item) => item._id === button.dataset.rowId);
+          if (row) openDrawer(row);
+        });
+      }
       el.drawerClose.addEventListener("click", closeDrawer);
       el.drawerBackdrop.addEventListener("click", closeDrawer);
       document.addEventListener("keydown", (event) => {
