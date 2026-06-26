@@ -3,128 +3,134 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NQ News Data Dashboard</title>
+  <title>NQ News Intelligence Dashboard</title>
   <style>
     :root {
-      --bg: #f6f7f9;
+      --bg: #f4f6f8;
       --panel: #ffffff;
-      --panel-2: #f0f4f8;
-      --text: #17202a;
-      --muted: #657286;
-      --line: #d9e0e8;
-      --accent: #126c83;
-      --accent-2: #0e7a55;
-      --warn: #a45b00;
-      --bad: #a33030;
-      --good-bg: #e7f5ee;
-      --warn-bg: #fff3dd;
-      --bad-bg: #fdecec;
-      --chip: #eef3f7;
-      --shadow: 0 14px 34px rgba(34, 49, 63, 0.10);
+      --panel-soft: #f8fafc;
+      --ink: #141a22;
+      --muted: #5f6d7e;
+      --line: #d8e0e8;
+      --blue: #1d5f8a;
+      --blue-soft: #e6f1f8;
+      --amber: #b06a00;
+      --amber-soft: #fff2d8;
+      --crimson: #a23a44;
+      --crimson-soft: #fdecef;
+      --green: #1f7a55;
+      --green-soft: #e6f5ee;
+      --slate: #49576a;
+      --slate-soft: #eef2f6;
+      --shadow: 0 18px 44px rgba(20, 26, 34, 0.10);
       --radius: 8px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       background: var(--bg);
-      color: var(--text);
+      color: var(--ink);
       font-family: "Segoe UI", Arial, sans-serif;
       font-size: 14px;
       line-height: 1.45;
     }
 
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    a:hover,
-    a:focus {
-      text-decoration: underline;
-    }
-
-    button,
-    input,
-    select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .shell {
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: auto auto 1fr;
-    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover, a:focus { text-decoration: underline; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
 
     .topbar {
       background: #ffffff;
       border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .topbar-inner {
-      max-width: 1440px;
+      max-width: 1480px;
       margin: 0 auto;
-      padding: 18px 24px 16px;
+      padding: 14px 24px;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: space-between;
       gap: 18px;
     }
 
+    .brand {
+      min-width: 0;
+    }
+
     .eyebrow {
       color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       letter-spacing: 0;
       text-transform: uppercase;
     }
 
     h1 {
-      margin: 4px 0 0;
-      font-size: 24px;
+      margin: 2px 0 0;
+      font-size: 25px;
       line-height: 1.15;
       letter-spacing: 0;
     }
 
     .run-meta {
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
       justify-content: flex-end;
+      flex-wrap: wrap;
       gap: 8px;
       color: var(--muted);
       font-size: 12px;
     }
 
-    .meta-pill {
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
       border: 1px solid var(--line);
       border-radius: 999px;
       background: #fff;
-      padding: 5px 9px;
+      padding: 5px 10px;
       white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .pill-edge {
+      border-color: #c9d3de;
+      background: var(--slate-soft);
+      color: #39475a;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(31, 122, 85, 0.14);
     }
 
     .dashboard {
-      max-width: 1440px;
-      width: 100%;
+      max-width: 1480px;
       margin: 0 auto;
-      padding: 18px 24px 24px;
-    }
-
-    .kpis {
+      padding: 18px 24px 28px;
       display: grid;
-      grid-template-columns: repeat(5, minmax(140px, 1fr));
-      gap: 12px;
-      margin-bottom: 14px;
+      gap: 14px;
     }
 
-    .kpi {
+    .triage {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .tile {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -132,37 +138,41 @@
       min-width: 0;
     }
 
-    .kpi-label {
+    .tile-label {
       color: var(--muted);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
     }
 
-    .kpi-value {
+    .tile-value {
       margin-top: 6px;
-      font-size: 24px;
-      font-weight: 750;
-      line-height: 1.1;
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 800;
     }
 
-    .kpi-note {
-      margin-top: 5px;
+    .tile-note {
+      margin-top: 7px;
       color: var(--muted);
       font-size: 12px;
-      min-height: 16px;
+      min-height: 17px;
     }
 
-    .filters {
+    .tile-review { border-top: 4px solid var(--crimson); }
+    .tile-watch { border-top: 4px solid var(--amber); }
+    .tile-clean { border-top: 4px solid var(--green); }
+    .tile-coverage { border-top: 4px solid var(--blue); }
+
+    .controls {
       display: grid;
-      grid-template-columns: 1.35fr repeat(4, minmax(140px, 0.65fr)) auto;
+      grid-template-columns: 1.5fr repeat(5, minmax(130px, 0.7fr)) auto;
       gap: 10px;
       align-items: end;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 12px;
-      margin-bottom: 14px;
     }
 
     .field {
@@ -174,7 +184,7 @@
     .field label {
       color: var(--muted);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .field input,
@@ -184,15 +194,15 @@
       border: 1px solid var(--line);
       border-radius: 6px;
       background: #fff;
-      color: var(--text);
+      color: var(--ink);
       padding: 0 10px;
       outline: none;
     }
 
     .field input:focus,
     .field select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(18, 108, 131, 0.14);
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(29, 95, 138, 0.14);
     }
 
     .reset-button,
@@ -201,228 +211,237 @@
       border: 1px solid var(--line);
       border-radius: 6px;
       background: #fff;
-      color: var(--text);
+      color: var(--ink);
       padding: 0 12px;
-      font-weight: 650;
+      font-weight: 750;
     }
 
     .reset-button:hover,
     .drawer-close:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .workbench {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .queue {
+      display: grid;
+      gap: 10px;
     }
 
     .status-line {
-      min-height: 24px;
-      margin: 0 0 8px;
-      color: var(--muted);
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+      min-height: 18px;
     }
 
-    .table-wrap {
+    .news-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 9px minmax(0, 1fr);
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       overflow: hidden;
-      box-shadow: var(--shadow);
+      box-shadow: 0 8px 24px rgba(20, 26, 34, 0.06);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
+    .rail {
+      background: var(--slate);
     }
 
-    thead {
-      background: var(--panel-2);
-      border-bottom: 1px solid var(--line);
+    .rail.context { background: var(--slate); }
+    .rail.watch { background: var(--blue); }
+    .rail.elevated { background: var(--amber); }
+    .rail.critical { background: var(--crimson); }
+
+    .card-body {
+      padding: 13px 14px 12px;
+      display: grid;
+      gap: 10px;
     }
 
-    th {
-      padding: 10px 12px;
-      color: #39475a;
-      text-align: left;
-      font-size: 12px;
-      text-transform: uppercase;
-      vertical-align: bottom;
-    }
-
-    td {
-      padding: 12px;
-      border-bottom: 1px solid var(--line);
-      vertical-align: top;
-    }
-
-    tbody tr {
-      background: #fff;
-      transition: background-color 120ms ease;
-    }
-
-    tbody tr:hover {
-      background: #f9fbfd;
-    }
-
-    tbody tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .headline-cell {
-      width: 28%;
-    }
-
-    .impact-cell {
-      width: 23%;
-    }
-
-    .source-cell {
-      width: 14%;
-    }
-
-    .tags-cell {
-      width: 17%;
-    }
-
-    .meta-cell {
-      width: 18%;
+    .card-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
     }
 
     .headline {
-      margin: 0 0 7px;
-      font-weight: 750;
+      margin: 0;
+      font-size: 16px;
       line-height: 1.25;
+      font-weight: 800;
       overflow-wrap: anywhere;
     }
 
-    .summary {
+    .source-row {
+      margin-top: 5px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       color: var(--muted);
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      font-size: 12px;
+    }
+
+    .score-block {
+      min-width: 118px;
+      text-align: right;
+    }
+
+    .score {
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 850;
+    }
+
+    .score-caption {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
     }
 
     .impact {
-      color: #263443;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      margin: 0;
+      color: #273544;
+      max-width: 86ch;
     }
 
-    .subtle {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .source-name {
-      font-weight: 700;
-      margin-bottom: 4px;
-      overflow-wrap: anywhere;
-    }
-
-    .source-link {
-      display: inline-block;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 12px;
-    }
-
-    .chips {
+    .chip-row,
+    .evidence-row,
+    .side-list {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
     }
 
-    .chip {
-      max-width: 100%;
-      border-radius: 999px;
-      background: var(--chip);
-      color: #344357;
-      padding: 3px 8px;
-      font-size: 12px;
-      font-weight: 650;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .chip-tier {
-      background: #e7f5ee;
-      color: #0c694c;
-    }
-
-    .chip-warn {
-      background: var(--warn-bg);
-      color: var(--warn);
-    }
-
-    .chip-bad {
-      background: var(--bad-bg);
-      color: var(--bad);
-    }
-
-    .metric-grid {
-      display: grid;
-      gap: 4px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .metric-grid b {
-      color: var(--text);
-      font-weight: 700;
-    }
-
-    .quality {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .q-dot {
+    .chip,
+    .metric {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      max-width: 100%;
+      min-height: 24px;
       border-radius: 999px;
-      padding: 3px 7px;
-      font-size: 11px;
+      padding: 3px 8px;
+      font-size: 12px;
       font-weight: 750;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .q-good {
-      background: var(--good-bg);
-      color: var(--accent-2);
+    .chip { background: var(--slate-soft); color: #354255; }
+    .chip-blue { background: var(--blue-soft); color: var(--blue); }
+    .chip-amber { background: var(--amber-soft); color: var(--amber); }
+    .chip-crimson { background: var(--crimson-soft); color: var(--crimson); }
+    .chip-green { background: var(--green-soft); color: var(--green); }
+
+    .metric {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #344357;
     }
 
-    .q-warn {
-      background: var(--warn-bg);
-      color: var(--warn);
+    .metric b {
+      margin-left: 4px;
+      color: var(--ink);
     }
 
-    .q-bad {
-      background: var(--bad-bg);
-      color: var(--bad);
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .action-left {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .row-action {
-      margin-top: 9px;
       border: 1px solid var(--line);
       border-radius: 6px;
       background: #fff;
-      padding: 5px 9px;
-      color: var(--accent);
-      font-weight: 700;
+      color: var(--blue);
+      min-height: 31px;
+      padding: 5px 10px;
+      font-weight: 800;
+    }
+
+    .row-action:hover {
+      border-color: var(--blue);
+    }
+
+    .side-panel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+    }
+
+    .panel h2 {
+      margin: 0 0 9px;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: #334155;
+    }
+
+    .bar-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .bar-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bar-track {
+      grid-column: 1 / -1;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--slate-soft);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--blue);
     }
 
     .empty {
       background: var(--panel);
-      border: 1px dashed #c4ccd6;
+      border: 1px dashed #bcc8d5;
       border-radius: var(--radius);
       padding: 26px;
       color: var(--muted);
@@ -431,14 +450,14 @@
 
     .empty h2 {
       margin: 0 0 8px;
-      color: var(--text);
+      color: var(--ink);
       font-size: 18px;
     }
 
     .drawer-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(20, 28, 36, 0.28);
+      background: rgba(20, 26, 34, 0.30);
       opacity: 0;
       pointer-events: none;
       transition: opacity 160ms ease;
@@ -449,11 +468,11 @@
       position: fixed;
       top: 0;
       right: 0;
-      width: min(560px, 100vw);
+      width: min(620px, 100vw);
       height: 100vh;
       background: #fff;
       border-left: 1px solid var(--line);
-      box-shadow: -20px 0 40px rgba(20, 28, 36, 0.18);
+      box-shadow: -20px 0 40px rgba(20, 26, 34, 0.18);
       transform: translateX(100%);
       transition: transform 180ms ease;
       z-index: 21;
@@ -512,14 +531,14 @@
 
     .kv {
       display: grid;
-      grid-template-columns: minmax(115px, 0.4fr) minmax(0, 1fr);
-      gap: 6px 12px;
+      grid-template-columns: minmax(120px, 0.38fr) minmax(0, 1fr);
+      gap: 7px 12px;
       margin: 0;
     }
 
     .kv dt {
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .kv dd {
@@ -527,158 +546,160 @@
       overflow-wrap: anywhere;
     }
 
+    details {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-soft);
+      padding: 10px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: #334155;
+    }
+
     pre.raw {
-      margin: 0;
+      margin: 10px 0 0;
       padding: 12px;
       background: #111820;
       color: #eaf1f7;
       border-radius: var(--radius);
       overflow: auto;
-      max-height: 280px;
+      max-height: 300px;
       font-size: 12px;
     }
 
-    .hidden {
-      display: none !important;
+    .hidden { display: none !important; }
+
+    @media (max-width: 1180px) {
+      .triage { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .controls { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .workbench { grid-template-columns: 1fr; }
+      .side-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
-    @media (max-width: 1120px) {
-      .kpis {
-        grid-template-columns: repeat(3, minmax(150px, 1fr));
-      }
-
-      .filters {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 820px) {
+    @media (max-width: 760px) {
       .topbar-inner {
         align-items: flex-start;
         flex-direction: column;
       }
 
-      .run-meta {
-        justify-content: flex-start;
-      }
-
-      .dashboard {
-        padding: 14px;
-      }
-
-      .kpis,
-      .filters {
-        grid-template-columns: 1fr;
-      }
-
-      .table-wrap {
-        overflow-x: auto;
-      }
-
-      table {
-        min-width: 980px;
-      }
+      .run-meta { justify-content: flex-start; }
+      .dashboard { padding: 14px; }
+      .triage,
+      .controls,
+      .side-panel { grid-template-columns: 1fr; }
+      .card-head { grid-template-columns: 1fr; }
+      .score-block { text-align: left; }
+      .kv { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div>
-          <div class="eyebrow">Local NQ news data</div>
-          <h1>News Data Dashboard</h1>
-        </div>
-        <div class="run-meta" id="runMeta">
-          <span class="meta-pill">Loading ./news_dashboard_data.json</span>
-        </div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="eyebrow">NQ retail futures desk</div>
+        <h1>NQ News Intelligence Dashboard</h1>
       </div>
-    </header>
-
-    <main class="dashboard">
-      <section class="kpis" aria-label="Dashboard summary">
-        <div class="kpi">
-          <div class="kpi-label">Visible Rows</div>
-          <div class="kpi-value" id="kpiVisible">0</div>
-          <div class="kpi-note" id="kpiTotal">0 loaded</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Top Tier</div>
-          <div class="kpi-value" id="kpiTopTier">0</div>
-          <div class="kpi-note">T1/M4/high importance</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Source Count</div>
-          <div class="kpi-value" id="kpiSources">0</div>
-          <div class="kpi-note">Distinct publishers</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">PIT Ready</div>
-          <div class="kpi-value" id="kpiPit">0</div>
-          <div class="kpi-note">Rows with known_at</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Quality Flags</div>
-          <div class="kpi-value" id="kpiFlags">0</div>
-          <div class="kpi-note">Warnings or blocked rows</div>
-        </div>
-      </section>
-
-      <section class="filters" aria-label="Filters">
-        <div class="field">
-          <label for="searchInput">Search</label>
-          <input id="searchInput" type="search" placeholder="Headline, impact, entity, topic, provenance">
-        </div>
-        <div class="field">
-          <label for="sourceFilter">Source</label>
-          <select id="sourceFilter"></select>
-        </div>
-        <div class="field">
-          <label for="datasetFilter">Dataset</label>
-          <select id="datasetFilter"></select>
-        </div>
-        <div class="field">
-          <label for="tierFilter">Tier</label>
-          <select id="tierFilter"></select>
-        </div>
-        <div class="field">
-          <label for="sortSelect">Sort</label>
-          <select id="sortSelect">
-            <option value="importanceDesc">Importance high to low</option>
-            <option value="importanceAsc">Importance low to high</option>
-            <option value="timeDesc">Newest first</option>
-            <option value="timeAsc">Oldest first</option>
-          </select>
-        </div>
-        <button class="reset-button" id="resetButton" type="button">Reset</button>
-      </section>
-
-      <div class="status-line">
-        <span id="resultStatus">Loading rows...</span>
-        <span id="dataStatus"></span>
+      <div class="run-meta" id="runMeta">
+        <span class="pill pill-edge">NO CERTIFIED EDGE</span>
+        <span class="pill"><span class="live-dot"></span>Loading data</span>
       </div>
+    </div>
+  </header>
 
-      <section class="table-wrap" id="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th class="headline-cell">Headline / News</th>
-              <th class="source-cell">Source</th>
-              <th class="impact-cell">Objective NQ Impact</th>
-              <th class="tags-cell">Tags and Model Fields</th>
-              <th class="meta-cell">Time, Provenance, Quality</th>
-            </tr>
-          </thead>
-          <tbody id="rowsBody"></tbody>
-        </table>
+  <main class="dashboard">
+    <section class="triage" aria-label="Triage summary">
+      <div class="tile tile-review">
+        <div class="tile-label">Review Now</div>
+        <div class="tile-value" id="kpiReview">0</div>
+        <div class="tile-note">Highest attention rows</div>
+      </div>
+      <div class="tile tile-watch">
+        <div class="tile-label">Watch</div>
+        <div class="tile-value" id="kpiWatch">0</div>
+        <div class="tile-note">Relevant context rows</div>
+      </div>
+      <div class="tile tile-clean">
+        <div class="tile-label">PIT Clean</div>
+        <div class="tile-value" id="kpiPit">0</div>
+        <div class="tile-note">Known-at present</div>
+      </div>
+      <div class="tile tile-coverage">
+        <div class="tile-label">Coverage</div>
+        <div class="tile-value" id="kpiCoverage">0</div>
+        <div class="tile-note" id="coverageNote">Sources loaded</div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Filters">
+      <div class="field">
+        <label for="searchInput">Search</label>
+        <input id="searchInput" type="search" placeholder="Headline, channel, source, entity">
+      </div>
+      <div class="field">
+        <label for="statusFilter">Status</label>
+        <select id="statusFilter"></select>
+      </div>
+      <div class="field">
+        <label for="sourceFilter">Source</label>
+        <select id="sourceFilter"></select>
+      </div>
+      <div class="field">
+        <label for="datasetFilter">Dataset</label>
+        <select id="datasetFilter"></select>
+      </div>
+      <div class="field">
+        <label for="channelFilter">Channel</label>
+        <select id="channelFilter"></select>
+      </div>
+      <div class="field">
+        <label for="sortSelect">Sort</label>
+        <select id="sortSelect">
+          <option value="rankDesc">Highest attention</option>
+          <option value="timeDesc">Newest first</option>
+          <option value="qualityIssues">Data issues first</option>
+          <option value="sourceAsc">Source A-Z</option>
+        </select>
+      </div>
+      <button class="reset-button" id="resetButton" type="button">Reset</button>
+    </section>
+
+    <div class="workbench">
+      <section class="queue" aria-label="Ranked news queue">
+        <div class="status-line">
+          <span id="resultStatus">Loading ranked queue...</span>
+          <span id="dataStatus"></span>
+        </div>
+        <div id="rowsBody"></div>
+        <div class="empty hidden" id="emptyState">
+          <h2>No rows to display</h2>
+          <div>Adjust filters or refresh the data pull.</div>
+        </div>
       </section>
 
-      <section class="empty hidden" id="emptyState">
-        <h2>No rows to display</h2>
-        <div id="emptyText">Adjust filters or add rows to news_dashboard_data.json.</div>
-      </section>
-    </main>
-  </div>
+      <aside class="side-panel" aria-label="Dashboard widgets">
+        <section class="panel">
+          <h2>Attention Mix</h2>
+          <div class="bar-list" id="attentionMix"></div>
+        </section>
+        <section class="panel">
+          <h2>Source Coverage</h2>
+          <div class="bar-list" id="sourceCoverage"></div>
+        </section>
+        <section class="panel">
+          <h2>Model Coverage</h2>
+          <div class="side-list" id="modelCoverage"></div>
+        </section>
+        <section class="panel">
+          <h2>Data Trust</h2>
+          <div class="side-list" id="trustStack"></div>
+        </section>
+      </aside>
+    </div>
+  </main>
 
   <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
   <aside class="drawer" id="drawer" aria-label="News row detail" aria-hidden="true">
@@ -691,64 +712,50 @@
 
   <script>
     const DATA_URL = "./news_dashboard_data.json";
+    const REFRESH_MS = 60000;
     const state = {
       raw: null,
       rows: [],
       view: [],
+      timer: null,
       filters: {
         search: "",
+        status: "all",
         source: "all",
         dataset: "all",
-        tier: "all",
-        sort: "importanceDesc"
+        channel: "all",
+        sort: "rankDesc"
       }
     };
 
     const el = {
       runMeta: document.getElementById("runMeta"),
       searchInput: document.getElementById("searchInput"),
+      statusFilter: document.getElementById("statusFilter"),
       sourceFilter: document.getElementById("sourceFilter"),
       datasetFilter: document.getElementById("datasetFilter"),
-      tierFilter: document.getElementById("tierFilter"),
+      channelFilter: document.getElementById("channelFilter"),
       sortSelect: document.getElementById("sortSelect"),
       resetButton: document.getElementById("resetButton"),
       rowsBody: document.getElementById("rowsBody"),
       resultStatus: document.getElementById("resultStatus"),
       dataStatus: document.getElementById("dataStatus"),
-      tableWrap: document.getElementById("tableWrap"),
       emptyState: document.getElementById("emptyState"),
-      emptyText: document.getElementById("emptyText"),
-      kpiVisible: document.getElementById("kpiVisible"),
-      kpiTotal: document.getElementById("kpiTotal"),
-      kpiTopTier: document.getElementById("kpiTopTier"),
-      kpiSources: document.getElementById("kpiSources"),
+      kpiReview: document.getElementById("kpiReview"),
+      kpiWatch: document.getElementById("kpiWatch"),
       kpiPit: document.getElementById("kpiPit"),
-      kpiFlags: document.getElementById("kpiFlags"),
+      kpiCoverage: document.getElementById("kpiCoverage"),
+      coverageNote: document.getElementById("coverageNote"),
+      attentionMix: document.getElementById("attentionMix"),
+      sourceCoverage: document.getElementById("sourceCoverage"),
+      modelCoverage: document.getElementById("modelCoverage"),
+      trustStack: document.getElementById("trustStack"),
       drawer: document.getElementById("drawer"),
       drawerBackdrop: document.getElementById("drawerBackdrop"),
       drawerClose: document.getElementById("drawerClose"),
       drawerTitle: document.getElementById("drawerTitle"),
       drawerBody: document.getElementById("drawerBody")
     };
-
-    function getFirst(obj, keys, fallback = "") {
-      for (const key of keys) {
-        if (obj && Object.prototype.hasOwnProperty.call(obj, key)) {
-          const value = obj[key];
-          if (value !== null && value !== undefined && value !== "") return value;
-        }
-      }
-      return fallback;
-    }
-
-    function asArray(value) {
-      if (Array.isArray(value)) return value;
-      if (value === null || value === undefined || value === "") return [];
-      if (typeof value === "string") {
-        return value.split(/[|,;]/).map((item) => item.trim()).filter(Boolean);
-      }
-      return [value];
-    }
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -759,19 +766,19 @@
         .replace(/'/g, "&#039;");
     }
 
-    function formatValue(value) {
-      if (value === null || value === undefined || value === "") return "Missing";
-      if (Array.isArray(value)) return value.join(", ") || "Missing";
+    function fmt(value) {
+      if (value === null || value === undefined || value === "") return "Not available";
+      if (typeof value === "number") return Number.isInteger(value) ? String(value) : value.toFixed(3).replace(/0+$/, "").replace(/\.$/, "");
+      if (Array.isArray(value)) return value.join(", ") || "Not available";
       if (typeof value === "object") return JSON.stringify(value);
       return String(value);
     }
 
     function formatTime(value) {
-      if (!value) return "Missing";
+      if (!value) return "Not available";
       const date = new Date(value);
       if (Number.isNaN(date.getTime())) return String(value);
       return date.toLocaleString(undefined, {
-        year: "numeric",
         month: "short",
         day: "2-digit",
         hour: "2-digit",
@@ -784,334 +791,300 @@
       return Number.isNaN(date.getTime()) ? 0 : date.getTime();
     }
 
+    function relativeAge(value) {
+      const t = timeValue(value);
+      if (!t) return "time missing";
+      const mins = Math.max(Math.round((Date.now() - t) / 60000), 0);
+      if (mins < 60) return `${mins}m ago`;
+      const hours = Math.round(mins / 60);
+      if (hours < 48) return `${hours}h ago`;
+      return `${Math.round(hours / 24)}d ago`;
+    }
+
     function extractRows(payload) {
       if (Array.isArray(payload)) return payload;
       if (!payload || typeof payload !== "object") return [];
-      const candidateKeys = ["rows", "records", "items", "news", "events", "articles", "data", "results"];
-      for (const key of candidateKeys) {
+      for (const key of ["rows", "records", "items", "news", "events", "articles", "data", "results"]) {
         if (Array.isArray(payload[key])) return payload[key];
-      }
-      if (payload.data && typeof payload.data === "object") {
-        for (const key of candidateKeys) {
-          if (Array.isArray(payload.data[key])) return payload.data[key];
-        }
       }
       return [];
     }
 
-    function collectPrefixed(obj, matcher) {
-      const out = [];
-      for (const [key, value] of Object.entries(obj || {})) {
-        if (matcher(key, value) && value !== null && value !== undefined && value !== "") {
-          out.push([key, value]);
-        }
-      }
-      return out;
-    }
-
-    function importanceScore(row) {
-      const direct = Number(getFirst(row, ["importance_score", "importance", "materiality_score", "score"], NaN));
-      if (Number.isFinite(direct)) return direct;
-      const tier = String(row.tier || row.importanceTier || "").toUpperCase();
-      const match = tier.match(/(?:T|M|P)(\d+)/);
-      if (match) return Number(match[1]);
-      if (/CRITICAL|HIGH|TOP/.test(tier)) return 4;
-      if (/MED|CONTEXT/.test(tier)) return 2;
-      if (/LOW|WATCH/.test(tier)) return 1;
+    function rankScore(row) {
+      if (row.rank && Number.isFinite(Number(row.rank.score))) return Number(row.rank.score);
+      const score = row.importance && Number(row.importance.score);
+      if (Number.isFinite(score)) return Math.max(0, Math.min(100, score * 100));
       return 0;
     }
 
-    function normalizeRow(row, index) {
-      const sourceObj = row.source && typeof row.source === "object" ? row.source : {};
-      const sourceText = typeof row.source === "string" ? row.source : "";
-      const provenanceObj = row.provenance && typeof row.provenance === "object" ? row.provenance : {};
-      const qualityObj = row.quality && typeof row.quality === "object" ? row.quality : {};
-      const statusObj = row.status && typeof row.status === "object" ? row.status : {};
-      const headline = getFirst(row, [
-        "headline", "title", "news", "news_text", "article_title", "event_title", "summary_headline"
-      ], `Untitled row ${index + 1}`);
-      const body = getFirst(row, [
-        "news", "summary", "description", "body", "article_summary", "text", "content"
-      ], "");
-      const impact = getFirst(row, [
-        "objective_nq_impact", "objectiveNqImpact", "nq_impact_text", "nqImpactText",
-        "nq_impact", "impact_text", "impact", "nq_transmission", "nq_context"
-      ], "No objective NQ impact text supplied.");
-      const sourceName = getFirst(row, ["source_name", "sourceName", "publisher", "provider"], getFirst(sourceObj, ["name", "id"], sourceText || "Unknown source"));
-      const sourceUrl = getFirst(row, ["source_url", "sourceUrl", "url", "link", "article_url"], getFirst(sourceObj, ["url", "source_url"], ""));
-      const dataset = getFirst(row, ["dataset", "dataset_id", "datasetId", "feed"], getFirst(sourceObj, ["dataset"], "Unknown dataset"));
-      const tier = getFirst(row, ["tier", "importance_tier", "importanceTier", "materiality_rank", "rank"], "Unranked");
-      const knownAt = getFirst(row, ["known_at", "knownAt", "known_at_max", "inputs_max_known_at"], getFirst(provenanceObj, ["known_at", "knownAt"], ""));
-      const eventTime = getFirst(row, ["event_time", "eventTime", "timestamp", "time", "published_at", "source_published_at"], "");
-      const ingestedAt = getFirst(row, ["ingested_at", "ingestedAt", "snapshot_at", "created_at"], getFirst(provenanceObj, ["ingested_at", "snapshot_at"], ""));
-      const license = getFirst(row, ["license", "license_class", "licenseClass"], getFirst(provenanceObj, ["license", "license_class"], "Missing"));
-      const provenance = getFirst(row, ["provenance_class", "provenance_type", "provenance_label"], getFirst(provenanceObj, ["class", "type", "label", "source"], formatValue(row.provenance || "Missing")));
-      const qualityRaw = getFirst(row, ["quality_status", "qualityStatus", "pit_quality", "quality"], getFirst(qualityObj, ["status", "label"], ""));
-      const statusRaw = getFirst(row, ["row_status", "admission_status", "analysis_status", "status"], getFirst(statusObj, ["status", "label"], ""));
-      const quality = typeof qualityRaw === "object" ? getFirst(qualityRaw, ["status", "label"], formatValue(qualityRaw)) : qualityRaw;
-      const status = typeof statusRaw === "object" ? getFirst(statusRaw, ["status", "label"], formatValue(statusRaw)) : statusRaw;
-      const eventTags = asArray(getFirst(row, ["event_tags", "eventTags", "events"], []));
-      const entityTags = asArray(getFirst(row, ["entity_tags", "entityTags", "entities", "tickers"], []));
-      const topicTags = asArray(getFirst(row, ["topic_tags", "topicTags", "topics", "themes"], []));
-      const allTags = [...eventTags, ...entityTags, ...topicTags].map(String).filter(Boolean);
-      const finbert = collectPrefixed(row, (key) => key.toLowerCase().includes("finbert") || key.toLowerCase().includes("sentiment"));
-      const beta = collectPrefixed(row, (key) => key.toLowerCase().includes("beta"));
-      const rowSearch = [
-        headline, body, impact, sourceName, dataset, tier, knownAt, eventTime, ingestedAt,
-        license, provenance, quality, status, allTags.join(" "),
-        finbert.map(([key, value]) => `${key} ${formatValue(value)}`).join(" "),
-        beta.map(([key, value]) => `${key} ${formatValue(value)}`).join(" ")
-      ].join(" ").toLowerCase();
-
-      return {
-        id: getFirst(row, ["id", "record_key", "recordKey", "row_id", "uuid"], `row-${index}`),
-        original: row,
-        headline,
-        body,
-        impact,
-        sourceName,
-        sourceUrl,
-        dataset,
-        tier,
-        knownAt,
-        eventTime,
-        ingestedAt,
-        license,
-        provenance,
-        quality,
-        status,
-        eventTags,
-        entityTags,
-        topicTags,
-        allTags,
-        finbert,
-        beta,
-        importance: importanceScore({ ...row, tier }),
-        sortTime: timeValue(eventTime || knownAt || ingestedAt),
-        rowSearch
-      };
+    function rowStatus(row) {
+      const score = rankScore(row);
+      const q = row.quality || {};
+      if ((q.blocking_failures || []).length || q.gate_pass === false || q.pit_status !== "known_at_present") return "Data issue";
+      if (score >= 72 || (row.rank && row.rank.label === "Review now")) return "Review now";
+      if (score >= 52 || (row.rank && row.rank.label === "Watch")) return "Watch";
+      return "Context";
     }
 
-    function qualityFlags(row) {
-      const flags = [];
-      const quality = String(row.quality || "").toLowerCase();
-      const status = String(row.status || "").toLowerCase();
-      if (row.knownAt) flags.push(["PIT", "q-good"]);
-      else flags.push(["NO known_at", "q-bad"]);
-      if (row.license && row.license !== "Missing") flags.push(["LICENSE", "q-good"]);
-      else flags.push(["NO license", "q-warn"]);
-      if (quality || status) {
-        const label = [row.quality, row.status].filter(Boolean).join(" / ");
-        const cls = /fail|block|reject|error|bad/.test(`${quality} ${status}`) ? "q-bad" :
-          /warn|stale|weak|missing|review/.test(`${quality} ${status}`) ? "q-warn" : "q-good";
-        flags.push([label, cls]);
+    function severityClass(row) {
+      const status = rowStatus(row);
+      const score = rankScore(row);
+      if (status === "Data issue") return "critical";
+      if (score >= 72) return "critical";
+      if (score >= 52) return "elevated";
+      if (score >= 30) return "watch";
+      return "context";
+    }
+
+    function statusChip(status) {
+      if (status === "Review now") return "chip-crimson";
+      if (status === "Watch") return "chip-amber";
+      if (status === "Data issue") return "chip-crimson";
+      return "chip-blue";
+    }
+
+    function qualityChips(row) {
+      const q = row.quality || {};
+      const p = row.provenance || {};
+      const chips = [];
+      chips.push(`<span class="chip ${q.pit_status === "known_at_present" ? "chip-green" : "chip-crimson"}">PIT ${q.pit_status === "known_at_present" ? "OK" : "Missing"}</span>`);
+      chips.push(`<span class="chip ${q.gate_pass === true ? "chip-green" : q.gate_pass === false ? "chip-crimson" : ""}">Gate ${q.gate_pass === true ? "Pass" : q.gate_pass === false ? "Fail" : "Unknown"}</span>`);
+      chips.push(`<span class="chip ${p.license_class ? "chip-green" : ""}">License ${escapeHtml(p.license_class || "Missing")}</span>`);
+      chips.push(`<span class="chip ${p.raw_sha256 ? "chip-green" : ""}">Raw hash ${p.raw_sha256 ? "Yes" : "No"}</span>`);
+      return chips.join("");
+    }
+
+    function modelMetric(row, kind) {
+      if (kind === "finbert") {
+        const f = row.finbert || {};
+        if (f.status !== "available") return `<span class="metric">FinBERT <b>Not computed</b></span>`;
+        const tone = Number(f.p_neg) > Number(f.p_pos) ? "negative text tone" : Number(f.p_pos) > Number(f.p_neg) ? "positive text tone" : "neutral text tone";
+        return `<span class="metric">FinBERT <b>${escapeHtml(tone)}</b></span>`;
       }
-      return flags;
+      const b = row.beta || {};
+      if (b.status !== "available") return `<span class="metric">Beta <b>Not computed</b></span>`;
+      return `<span class="metric">Beta <b>${fmt(b.beta)}</b></span>`;
     }
 
-    function isTopTier(row) {
-      const tier = String(row.tier || "").toUpperCase();
-      return row.importance >= 4 || /T1|M4|CRITICAL|HIGH|TOP/.test(tier);
+    function normalizeRows(rows) {
+      return rows.map((row, index) => ({
+        ...row,
+        _id: row.record_key || `row-${index}`,
+        _status: rowStatus(row),
+        _score: rankScore(row),
+        _channels: Array.isArray(row.tags) ? row.tags : [],
+        _time: row.known_at || row.published_at || row.event_time || row.ingested_at || ""
+      }));
     }
 
-    function hasQualityIssue(row) {
-      const text = `${row.quality} ${row.status}`.toLowerCase();
-      return !row.knownAt || !row.license || row.license === "Missing" ||
-        /fail|block|reject|error|bad|warn|stale|weak|missing|review/.test(text);
+    function setOptions(select, values, label) {
+      const current = select.value || "all";
+      select.innerHTML = `<option value="all">${label}</option>` + values
+        .map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`)
+        .join("");
+      select.value = values.includes(current) ? current : "all";
     }
 
-    function uniqueValues(rows, key) {
-      return [...new Set(rows.map((row) => String(row[key] || "Missing")).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b));
-    }
-
-    function populateSelect(select, values, allLabel) {
-      select.innerHTML = "";
-      const all = document.createElement("option");
-      all.value = "all";
-      all.textContent = allLabel;
-      select.appendChild(all);
-      for (const value of values) {
-        const option = document.createElement("option");
-        option.value = value;
-        option.textContent = value;
-        select.appendChild(option);
-      }
-    }
-
-    function chip(value, cls = "") {
-      return `<span class="chip ${cls}">${escapeHtml(value)}</span>`;
-    }
-
-    function metric(label, value) {
-      return `<span><b>${escapeHtml(label)}:</b> ${escapeHtml(formatValue(value))}</span>`;
-    }
-
-    function renderKpis() {
-      const visible = state.view;
-      const loaded = state.rows;
-      el.kpiVisible.textContent = visible.length.toLocaleString();
-      el.kpiTotal.textContent = `${loaded.length.toLocaleString()} loaded`;
-      el.kpiTopTier.textContent = visible.filter(isTopTier).length.toLocaleString();
-      el.kpiSources.textContent = new Set(visible.map((row) => row.sourceName)).size.toLocaleString();
-      el.kpiPit.textContent = visible.filter((row) => row.knownAt).length.toLocaleString();
-      el.kpiFlags.textContent = visible.filter(hasQualityIssue).length.toLocaleString();
-    }
-
-    function renderRows() {
-      el.rowsBody.innerHTML = "";
-      const frag = document.createDocumentFragment();
-      state.view.forEach((row) => {
-        const tr = document.createElement("tr");
-        const tags = [
-          ...row.eventTags.map((tag) => chip(tag)),
-          ...row.entityTags.map((tag) => chip(tag)),
-          ...row.topicTags.map((tag) => chip(tag))
-        ].join("");
-        const modelFields = [
-          ...row.finbert.map(([key, value]) => chip(`${key}: ${formatValue(value)}`)),
-          ...row.beta.map(([key, value]) => chip(`${key}: ${formatValue(value)}`))
-        ].join("");
-        const sourceLink = row.sourceUrl
-          ? `<a class="source-link" href="${escapeHtml(row.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(row.sourceUrl)}</a>`
-          : `<span class="subtle">No source URL</span>`;
-        const flags = qualityFlags(row).map(([label, cls]) => `<span class="q-dot ${cls}">${escapeHtml(label)}</span>`).join("");
-        tr.innerHTML = `
-          <td class="headline-cell">
-            <p class="headline">${escapeHtml(row.headline)}</p>
-            <div class="summary">${escapeHtml(row.body || "No additional news text supplied.")}</div>
-            <button class="row-action" type="button" data-row-id="${escapeHtml(row.id)}">Details</button>
-          </td>
-          <td class="source-cell">
-            <div class="source-name">${escapeHtml(row.sourceName)}</div>
-            ${sourceLink}
-            <div class="metric-grid" style="margin-top:8px">
-              ${metric("Dataset", row.dataset)}
-              ${metric("Tier", row.tier)}
-            </div>
-          </td>
-          <td class="impact-cell">
-            <div class="impact">${escapeHtml(row.impact)}</div>
-          </td>
-          <td class="tags-cell">
-            <div class="chips">${tags || chip("No tags", "chip-warn")}</div>
-            <div class="chips" style="margin-top:8px">${modelFields || chip("No FinBERT or beta fields", "chip-warn")}</div>
-          </td>
-          <td class="meta-cell">
-            <div class="metric-grid">
-              ${metric("Event", formatTime(row.eventTime))}
-              ${metric("Known", formatTime(row.knownAt))}
-              ${metric("Ingested", formatTime(row.ingestedAt))}
-              ${metric("Provenance", row.provenance)}
-              ${metric("License", row.license)}
-            </div>
-            <div class="quality">${flags}</div>
-          </td>
-        `;
-        frag.appendChild(tr);
-      });
-      el.rowsBody.appendChild(frag);
-    }
-
-    function renderStatus() {
-      const hasRows = state.rows.length > 0;
-      const hasView = state.view.length > 0;
-      el.resultStatus.textContent = hasRows
-        ? `${state.view.length.toLocaleString()} of ${state.rows.length.toLocaleString()} rows visible`
-        : "No rows loaded";
-      el.tableWrap.classList.toggle("hidden", !hasView);
-      el.emptyState.classList.toggle("hidden", hasView);
-      if (!hasRows) {
-        el.emptyText.textContent = "Place news_dashboard_data.json beside this HTML file. The file can be an array or an object containing rows, records, items, news, events, data, or results.";
-      } else if (!hasView) {
-        el.emptyText.textContent = "No records match the current filters.";
-      }
+    function populateFilters() {
+      const rows = state.rows;
+      setOptions(el.statusFilter, ["Review now", "Watch", "Context", "Data issue"], "All statuses");
+      setOptions(el.sourceFilter, [...new Set(rows.map((r) => r.source_name || r.source || "Unknown"))].sort(), "All sources");
+      setOptions(el.datasetFilter, [...new Set(rows.map((r) => r.dataset || "unknown"))].sort(), "All datasets");
+      setOptions(el.channelFilter, [...new Set(rows.flatMap((r) => r._channels))].sort(), "All channels");
     }
 
     function applyFilters() {
       const search = state.filters.search.trim().toLowerCase();
-      state.view = state.rows.filter((row) => {
-        if (state.filters.source !== "all" && row.sourceName !== state.filters.source) return false;
+      let rows = state.rows.filter((row) => {
+        const haystack = [
+          row.headline,
+          row.objective_nq_impact,
+          row.source_name,
+          row.source,
+          row.dataset,
+          ...(row._channels || [])
+        ].join(" ").toLowerCase();
+        if (search && !haystack.includes(search)) return false;
+        if (state.filters.status !== "all" && row._status !== state.filters.status) return false;
+        if (state.filters.source !== "all" && (row.source_name || row.source || "Unknown") !== state.filters.source) return false;
         if (state.filters.dataset !== "all" && row.dataset !== state.filters.dataset) return false;
-        if (state.filters.tier !== "all" && row.tier !== state.filters.tier) return false;
-        if (search && !row.rowSearch.includes(search)) return false;
+        if (state.filters.channel !== "all" && !(row._channels || []).includes(state.filters.channel)) return false;
         return true;
       });
-      state.view.sort((a, b) => {
-        if (state.filters.sort === "importanceAsc") return a.importance - b.importance || a.sortTime - b.sortTime;
-        if (state.filters.sort === "timeDesc") return b.sortTime - a.sortTime || b.importance - a.importance;
-        if (state.filters.sort === "timeAsc") return a.sortTime - b.sortTime || b.importance - a.importance;
-        return b.importance - a.importance || b.sortTime - a.sortTime;
+
+      rows.sort((a, b) => {
+        if (state.filters.sort === "timeDesc") return timeValue(b._time) - timeValue(a._time);
+        if (state.filters.sort === "qualityIssues") {
+          const aq = a._status === "Data issue" ? 1 : 0;
+          const bq = b._status === "Data issue" ? 1 : 0;
+          return bq - aq || b._score - a._score;
+        }
+        if (state.filters.sort === "sourceAsc") {
+          return String(a.source_name || a.source || "").localeCompare(String(b.source_name || b.source || "")) || b._score - a._score;
+        }
+        return b._score - a._score || timeValue(b._time) - timeValue(a._time);
       });
-      renderKpis();
-      renderRows();
-      renderStatus();
+
+      state.view = rows;
+      render();
     }
 
-    function renderRunMeta(payload) {
-      const meta = payload && typeof payload === "object" && !Array.isArray(payload) ? payload : {};
-      const loadedAt = new Date().toLocaleString();
-      const metaItems = [
-        ["Loaded", loadedAt],
-        ["As of", getFirst(meta, ["as_of", "asOf", "generated_at", "generatedAt"], "")],
-        ["Rows", state.rows.length],
-        ["File", DATA_URL]
-      ];
-      el.runMeta.innerHTML = metaItems
-        .filter(([, value]) => value !== "")
-        .map(([label, value]) => `<span class="meta-pill">${escapeHtml(label)}: ${escapeHtml(formatValue(value))}</span>`)
-        .join("");
+    function countWhere(rows, fn) {
+      return rows.reduce((n, row) => n + (fn(row) ? 1 : 0), 0);
     }
 
-    function showDrawer(row) {
-      el.drawerTitle.textContent = row.headline;
-      const tagSection = row.allTags.length ? row.allTags.map((tag) => chip(tag)).join("") : chip("No tags", "chip-warn");
-      const modelSection = [
-        ...row.finbert.map(([key, value]) => metric(key, value)),
-        ...row.beta.map(([key, value]) => metric(key, value))
-      ].join("");
+    function renderBars(target, pairs, color = "var(--blue)") {
+      const max = Math.max(...pairs.map(([, value]) => value), 1);
+      target.innerHTML = pairs.map(([label, value]) => `
+        <div class="bar-row">
+          <div class="bar-label">${escapeHtml(label)}</div>
+          <strong>${value}</strong>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round((value / max) * 100)}%; background:${color}"></div></div>
+        </div>
+      `).join("");
+    }
+
+    function renderSideWidgets(rows) {
+      const mix = ["Review now", "Watch", "Context", "Data issue"].map((label) => [label, countWhere(rows, (r) => r._status === label)]);
+      renderBars(el.attentionMix, mix, "var(--amber)");
+      const sourceCounts = [...rows.reduce((m, row) => {
+        const key = row.source_name || row.source || "Unknown";
+        m.set(key, (m.get(key) || 0) + 1);
+        return m;
+      }, new Map()).entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+      renderBars(el.sourceCoverage, sourceCounts, "var(--blue)");
+      const finbert = countWhere(rows, (r) => (r.finbert || {}).status === "available");
+      const beta = countWhere(rows, (r) => (r.beta || {}).status === "available");
+      el.modelCoverage.innerHTML = `
+        <span class="chip ${finbert ? "chip-green" : ""}">FinBERT ${finbert}/${rows.length}</span>
+        <span class="chip ${beta ? "chip-green" : ""}">Beta ${beta}/${rows.length}</span>
+        <span class="chip">Importance ${countWhere(rows, (r) => (r.importance || {}).status === "available")}/${rows.length}</span>
+      `;
+      el.trustStack.innerHTML = `
+        <span class="chip chip-green">PIT ${countWhere(rows, (r) => (r.quality || {}).pit_status === "known_at_present")}</span>
+        <span class="chip chip-green">Gate pass ${countWhere(rows, (r) => (r.quality || {}).gate_pass === true)}</span>
+        <span class="chip chip-crimson">Issues ${countWhere(rows, (r) => r._status === "Data issue")}</span>
+      `;
+    }
+
+    function renderCard(row) {
+      const status = row._status;
+      const score = Math.round(row._score);
+      const chips = (row._channels || []).slice(0, 7).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("");
+      const url = row.source_url ? `<a class="row-action" href="${escapeHtml(row.source_url)}" target="_blank" rel="noopener">Source</a>` : "";
+      return `
+        <article class="news-card">
+          <div class="rail ${severityClass(row)}"></div>
+          <div class="card-body">
+            <div class="card-head">
+              <div>
+                <h2 class="headline">${escapeHtml(row.headline || "Untitled row")}</h2>
+                <div class="source-row">
+                  <span>${escapeHtml(row.source_name || row.source || "Unknown source")}</span>
+                  <span>${escapeHtml(row.dataset || "unknown dataset")}</span>
+                  <span>${escapeHtml(relativeAge(row._time))}</span>
+                </div>
+              </div>
+              <div class="score-block">
+                <div class="score">${score}</div>
+                <div class="score-caption">Attention</div>
+              </div>
+            </div>
+            <p class="impact">${escapeHtml(row.objective_nq_impact || "No objective NQ impact text supplied.")}</p>
+            <div class="chip-row">
+              <span class="chip ${statusChip(status)}">${escapeHtml(status)}</span>
+              ${chips || '<span class="chip">No channel tags</span>'}
+            </div>
+            <div class="evidence-row">
+              <span class="metric">Importance <b>${escapeHtml((row.importance || {}).tier || "UNRANKED")}</b></span>
+              ${modelMetric(row, "finbert")}
+              ${modelMetric(row, "beta")}
+              <span class="metric">Known <b>${escapeHtml(formatTime(row.known_at))}</b></span>
+            </div>
+            <div class="chip-row">${qualityChips(row)}</div>
+            <div class="card-actions">
+              <div class="action-left">
+                <button class="row-action" type="button" data-row-id="${escapeHtml(row._id)}">Details</button>
+                ${url}
+              </div>
+              <span class="score-caption">${escapeHtml((row.rank || {}).method || "frontend_rank")}</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function render() {
+      const rows = state.view;
+      const total = state.rows.length;
+      el.kpiReview.textContent = countWhere(state.rows, (r) => r._status === "Review now");
+      el.kpiWatch.textContent = countWhere(state.rows, (r) => r._status === "Watch");
+      el.kpiPit.textContent = countWhere(state.rows, (r) => (r.quality || {}).pit_status === "known_at_present");
+      el.kpiCoverage.textContent = new Set(state.rows.map((r) => r.source || r.source_name || "Unknown")).size;
+      el.coverageNote.textContent = `${new Set(state.rows.map((r) => r.dataset || "unknown")).size} datasets`;
+      el.resultStatus.textContent = `${rows.length} of ${total} rows shown, ranked by attention`;
+      el.rowsBody.innerHTML = rows.map(renderCard).join("");
+      el.emptyState.classList.toggle("hidden", rows.length > 0);
+      renderSideWidgets(state.rows);
+    }
+
+    function kvRow(label, value) {
+      return `<dt>${escapeHtml(label)}</dt><dd>${escapeHtml(fmt(value))}</dd>`;
+    }
+
+    function objectKv(obj, labels) {
+      return `<dl class="kv">${labels.map(([label, key]) => kvRow(label, obj ? obj[key] : null)).join("")}</dl>`;
+    }
+
+    function openDrawer(row) {
+      el.drawerTitle.textContent = row.headline || "Row detail";
+      const f = row.finbert || {};
+      const b = row.beta || {};
+      const p = row.provenance || {};
+      const q = row.quality || {};
       el.drawerBody.innerHTML = `
         <section class="section">
-          <h3>Objective NQ Impact</h3>
-          <p>${escapeHtml(row.impact)}</p>
+          <div class="chip-row">
+            <span class="chip ${statusChip(row._status)}">${escapeHtml(row._status)}</span>
+            <span class="chip">Attention ${Math.round(row._score)}</span>
+            <span class="chip pill-edge">NO CERTIFIED EDGE</span>
+          </div>
+          <p class="impact">${escapeHtml(row.objective_nq_impact || "No objective NQ impact text supplied.")}</p>
         </section>
         <section class="section">
-          <h3>News</h3>
-          <p>${escapeHtml(row.body || row.headline)}</p>
-        </section>
-        <section class="section">
-          <h3>Source and Provenance</h3>
+          <h3>Source and Time</h3>
           <dl class="kv">
-            <dt>Source</dt><dd>${escapeHtml(row.sourceName)}</dd>
-            <dt>Source URL</dt><dd>${row.sourceUrl ? `<a href="${escapeHtml(row.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(row.sourceUrl)}</a>` : "Missing"}</dd>
-            <dt>Dataset</dt><dd>${escapeHtml(row.dataset)}</dd>
-            <dt>Provenance</dt><dd>${escapeHtml(row.provenance)}</dd>
-            <dt>License</dt><dd>${escapeHtml(row.license)}</dd>
-            <dt>Known at</dt><dd>${escapeHtml(formatTime(row.knownAt))}</dd>
+            ${kvRow("Source", row.source_name || row.source)}
+            ${kvRow("Dataset", row.dataset)}
+            ${kvRow("Published", formatTime(row.published_at || row.event_time))}
+            ${kvRow("Known at", formatTime(row.known_at))}
+            ${kvRow("Known evidence", row.known_at_evidence)}
+            ${row.source_url ? `<dt>URL</dt><dd><a href="${escapeHtml(row.source_url)}" target="_blank" rel="noopener">${escapeHtml(row.source_url)}</a></dd>` : kvRow("URL", null)}
           </dl>
         </section>
         <section class="section">
-          <h3>Timestamps</h3>
-          <dl class="kv">
-            <dt>Event time</dt><dd>${escapeHtml(formatTime(row.eventTime))}</dd>
-            <dt>Ingested at</dt><dd>${escapeHtml(formatTime(row.ingestedAt))}</dd>
-          </dl>
+          <h3>Model Facts</h3>
+          ${objectKv(row.importance || {}, [["Importance score", "score"], ["Importance tier", "tier"], ["Rubric", "rubric_version"], ["Top features", "top_features"]])}
+          <br>
+          ${objectKv(f, [["FinBERT status", "status"], ["Polarity", "polarity"], ["Intensity", "intensity"], ["P positive", "p_pos"], ["P negative", "p_neg"], ["P neutral", "p_neu"], ["Model", "model"]])}
+          <br>
+          ${objectKv(b, [["Beta status", "status"], ["Beta", "beta"], ["Alpha", "alpha"], ["P value", "p_value"], ["Sample n", "n"]])}
         </section>
         <section class="section">
-          <h3>Tags</h3>
-          <div class="chips">${tagSection}</div>
+          <h3>Ranking Components</h3>
+          ${objectKv((row.rank || {}).components || {}, [["Importance", "importance"], ["Channel relevance", "channel_relevance"], ["Source authority", "source_authority"], ["Freshness", "freshness"], ["Provenance confidence", "provenance_confidence"], ["Data risk", "data_risk"]])}
         </section>
         <section class="section">
-          <h3>FinBERT and Beta Fields</h3>
-          <dl class="kv">${modelSection || "<dt>Fields</dt><dd>Missing</dd>"}</dl>
+          <h3>Provenance and Quality</h3>
+          ${objectKv(p, [["Raw SHA256", "raw_sha256"], ["Adapter SHA", "adapter_git_sha"], ["License", "license_class"], ["Host", "source_host"], ["Availability", "availability_basis"], ["Dedupe key", "dedupe_key"]])}
+          <br>
+          ${objectKv(q, [["Gate pass", "gate_pass"], ["Gate available", "gate_available"], ["PIT status", "pit_status"], ["Blocking failures", "blocking_failures"], ["Warnings", "warnings"]])}
         </section>
         <section class="section">
-          <h3>Quality and Status</h3>
-          <div class="quality">${qualityFlags(row).map(([label, cls]) => `<span class="q-dot ${cls}">${escapeHtml(label)}</span>`).join("")}</div>
-        </section>
-        <section class="section">
-          <h3>Raw Row</h3>
-          <pre class="raw">${escapeHtml(JSON.stringify(row.original, null, 2))}</pre>
+          <details>
+            <summary>Raw normalized row</summary>
+            <pre class="raw">${escapeHtml(JSON.stringify(row, null, 2))}</pre>
+          </details>
         </section>
       `;
       document.body.classList.add("drawer-open");
@@ -1123,41 +1096,52 @@
       el.drawer.setAttribute("aria-hidden", "true");
     }
 
+    async function loadData() {
+      try {
+        const response = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        state.raw = payload;
+        state.rows = normalizeRows(extractRows(payload));
+        populateFilters();
+        applyFilters();
+        const generated = payload.generated_at ? formatTime(payload.generated_at) : "unknown";
+        el.runMeta.innerHTML = `
+          <span class="pill pill-edge">NO CERTIFIED EDGE</span>
+          <span class="pill"><span class="live-dot"></span>Live refresh 60s</span>
+          <span class="pill">${state.rows.length} rows</span>
+          <span class="pill">Generated ${escapeHtml(generated)}</span>
+        `;
+        el.dataStatus.textContent = `Last checked ${formatTime(new Date().toISOString())}`;
+      } catch (err) {
+        el.resultStatus.textContent = "Dashboard data could not be loaded.";
+        el.dataStatus.textContent = err.message || String(err);
+      }
+    }
+
     function bindEvents() {
-      el.searchInput.addEventListener("input", () => {
-        state.filters.search = el.searchInput.value;
+      el.searchInput.addEventListener("input", (event) => {
+        state.filters.search = event.target.value;
         applyFilters();
       });
-      el.sourceFilter.addEventListener("change", () => {
-        state.filters.source = el.sourceFilter.value;
-        applyFilters();
-      });
-      el.datasetFilter.addEventListener("change", () => {
-        state.filters.dataset = el.datasetFilter.value;
-        applyFilters();
-      });
-      el.tierFilter.addEventListener("change", () => {
-        state.filters.tier = el.tierFilter.value;
-        applyFilters();
-      });
-      el.sortSelect.addEventListener("change", () => {
-        state.filters.sort = el.sortSelect.value;
-        applyFilters();
-      });
+      for (const [node, key] of [[el.statusFilter, "status"], [el.sourceFilter, "source"], [el.datasetFilter, "dataset"], [el.channelFilter, "channel"], [el.sortSelect, "sort"]]) {
+        node.addEventListener("change", (event) => {
+          state.filters[key] = event.target.value;
+          applyFilters();
+        });
+      }
       el.resetButton.addEventListener("click", () => {
-        state.filters = { search: "", source: "all", dataset: "all", tier: "all", sort: "importanceDesc" };
+        state.filters = { search: "", status: "all", source: "all", dataset: "all", channel: "all", sort: "rankDesc" };
         el.searchInput.value = "";
-        el.sourceFilter.value = "all";
-        el.datasetFilter.value = "all";
-        el.tierFilter.value = "all";
-        el.sortSelect.value = "importanceDesc";
+        el.sortSelect.value = "rankDesc";
+        populateFilters();
         applyFilters();
       });
       el.rowsBody.addEventListener("click", (event) => {
         const button = event.target.closest("[data-row-id]");
         if (!button) return;
-        const row = state.rows.find((candidate) => String(candidate.id) === String(button.dataset.rowId));
-        if (row) showDrawer(row);
+        const row = state.rows.find((item) => item._id === button.dataset.rowId);
+        if (row) openDrawer(row);
       });
       el.drawerClose.addEventListener("click", closeDrawer);
       el.drawerBackdrop.addEventListener("click", closeDrawer);
@@ -1166,34 +1150,9 @@
       });
     }
 
-    async function loadData() {
-      try {
-        const response = await fetch(DATA_URL, { cache: "no-store" });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const payload = await response.json();
-        state.raw = payload;
-        state.rows = extractRows(payload).map(normalizeRow);
-        populateSelect(el.sourceFilter, uniqueValues(state.rows, "sourceName"), "All sources");
-        populateSelect(el.datasetFilter, uniqueValues(state.rows, "dataset"), "All datasets");
-        populateSelect(el.tierFilter, uniqueValues(state.rows, "tier"), "All tiers");
-        renderRunMeta(payload);
-        el.dataStatus.textContent = "Data loaded";
-        applyFilters();
-      } catch (error) {
-        state.rows = [];
-        state.view = [];
-        populateSelect(el.sourceFilter, [], "All sources");
-        populateSelect(el.datasetFilter, [], "All datasets");
-        populateSelect(el.tierFilter, [], "All tiers");
-        el.runMeta.innerHTML = `<span class="meta-pill">Missing or unreadable: ${escapeHtml(DATA_URL)}</span>`;
-        el.dataStatus.textContent = `Could not load data: ${error.message}`;
-        renderKpis();
-        renderStatus();
-      }
-    }
-
     bindEvents();
     loadData();
+    state.timer = window.setInterval(loadData, REFRESH_MS);
   </script>
 </body>
 </html>
