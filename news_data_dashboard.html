@@ -318,6 +318,27 @@
       max-width: 86ch;
     }
 
+    .meaning-box {
+      display: grid;
+      gap: 6px;
+      padding: 10px;
+      border: 1px solid #d9e5ee;
+      border-radius: var(--radius);
+      background: var(--panel-soft);
+    }
+
+    .meaning-label {
+      color: #3b4a5d;
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .meaning-text {
+      margin: 0;
+      color: #1f2b38;
+    }
+
     .chip-row,
     .evidence-row,
     .side-list {
@@ -847,10 +868,10 @@
       const q = row.quality || {};
       const p = row.provenance || {};
       const chips = [];
-      chips.push(`<span class="chip ${q.pit_status === "known_at_present" ? "chip-green" : "chip-crimson"}">PIT ${q.pit_status === "known_at_present" ? "OK" : "Missing"}</span>`);
-      chips.push(`<span class="chip ${q.gate_pass === true ? "chip-green" : q.gate_pass === false ? "chip-crimson" : ""}">Gate ${q.gate_pass === true ? "Pass" : q.gate_pass === false ? "Fail" : "Unknown"}</span>`);
-      chips.push(`<span class="chip ${p.license_class ? "chip-green" : ""}">License ${escapeHtml(p.license_class || "Missing")}</span>`);
-      chips.push(`<span class="chip ${p.raw_sha256 ? "chip-green" : ""}">Raw hash ${p.raw_sha256 ? "Yes" : "No"}</span>`);
+      chips.push(`<span class="chip ${q.pit_status === "known_at_present" ? "chip-green" : "chip-crimson"}">Known time ${q.pit_status === "known_at_present" ? "OK" : "Missing"}</span>`);
+      chips.push(`<span class="chip ${q.gate_pass === true ? "chip-green" : q.gate_pass === false ? "chip-crimson" : ""}">Validation ${q.gate_pass === true ? "Pass" : q.gate_pass === false ? "Fail" : "Unknown"}</span>`);
+      chips.push(`<span class="chip ${p.license_class ? "chip-green" : ""}">Rights ${escapeHtml(p.license_class || "Missing")}</span>`);
+      chips.push(`<span class="chip ${p.raw_sha256 ? "chip-green" : ""}">Archived raw ${p.raw_sha256 ? "Yes" : "No"}</span>`);
       return chips.join("");
     }
 
@@ -898,6 +919,9 @@
       let rows = state.rows.filter((row) => {
         const haystack = [
           row.headline,
+          row.event_interpretation && row.event_interpretation.what_happened,
+          row.event_interpretation && row.event_interpretation.timing,
+          row.event_interpretation && row.event_interpretation.retail_takeaway,
           row.objective_nq_impact,
           row.source_name,
           row.source,
@@ -970,6 +994,7 @@
     function renderCard(row) {
       const status = row._status;
       const score = Math.round(row._score);
+      const meaning = row.event_interpretation || {};
       const chips = (row._channels || []).slice(0, 7).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("");
       const url = row.source_url ? `<a class="row-action" href="${escapeHtml(row.source_url)}" target="_blank" rel="noopener">Source</a>` : "";
       return `
@@ -990,7 +1015,18 @@
                 <div class="score-caption">Attention</div>
               </div>
             </div>
-            <p class="impact">${escapeHtml(row.objective_nq_impact || "No objective NQ impact text supplied.")}</p>
+            <div class="meaning-box">
+              <div class="meaning-label">What this news means</div>
+              <p class="meaning-text">${escapeHtml(meaning.what_happened || "No plain-English explanation supplied yet.")}</p>
+              <div class="source-row">
+                <span>${escapeHtml(meaning.timing || "Timing not supplied")}</span>
+                <span>${escapeHtml(meaning.retail_takeaway || "Use as context until a concrete market channel is verified.")}</span>
+              </div>
+            </div>
+            <div class="meaning-box">
+              <div class="meaning-label">Why it matters for NQ</div>
+              <p class="meaning-text">${escapeHtml(meaning.why_it_matters_for_nq || row.objective_nq_impact || "No objective NQ impact text supplied.")}</p>
+            </div>
             <div class="chip-row">
               <span class="chip ${statusChip(status)}">${escapeHtml(status)}</span>
               ${chips || '<span class="chip">No channel tags</span>'}
@@ -1036,12 +1072,42 @@
       return `<dl class="kv">${labels.map(([label, key]) => kvRow(label, obj ? obj[key] : null)).join("")}</dl>`;
     }
 
+    function rankMeaning(key, value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return "not available";
+      if (key === "data_risk") {
+        if (n >= 0.30) return "high risk";
+        if (n > 0) return "some risk";
+        return "clean";
+      }
+      if (n >= 0.75) return "high";
+      if (n >= 0.45) return "moderate";
+      if (n > 0) return "low";
+      return "not present";
+    }
+
+    function rankRows(components) {
+      const labels = [
+        ["Importance", "importance", "How strongly the row is marked as structurally important."],
+        ["Channel relevance", "channel_relevance", "Whether the row touches rates, liquidity, mega-cap tech, policy, or another NQ channel."],
+        ["Source authority", "source_authority", "Whether the source is official or otherwise trusted."],
+        ["Freshness", "freshness", "How recent the row is by known-at/event time."],
+        ["Provenance confidence", "provenance_confidence", "Whether source URL, known-at, gate result, and raw archive are present."],
+        ["Data risk", "data_risk", "Penalty for missing known-at, failing validation, or missing source evidence."]
+      ];
+      return `<dl class="kv">${labels.map(([label, key, help]) => {
+        const value = components ? components[key] : null;
+        return `<dt>${escapeHtml(label)}</dt><dd><b>${escapeHtml(rankMeaning(key, value))}</b> (${escapeHtml(fmt(value))}) - ${escapeHtml(help)}</dd>`;
+      }).join("")}</dl>`;
+    }
+
     function openDrawer(row) {
       el.drawerTitle.textContent = row.headline || "Row detail";
       const f = row.finbert || {};
       const b = row.beta || {};
       const p = row.provenance || {};
       const q = row.quality || {};
+      const meaning = row.event_interpretation || {};
       el.drawerBody.innerHTML = `
         <section class="section">
           <div class="chip-row">
@@ -1049,7 +1115,17 @@
             <span class="chip">Attention ${Math.round(row._score)}</span>
             <span class="chip pill-edge">NO CERTIFIED EDGE</span>
           </div>
-          <p class="impact">${escapeHtml(row.objective_nq_impact || "No objective NQ impact text supplied.")}</p>
+          <p class="impact">${escapeHtml(meaning.why_it_matters_for_nq || row.objective_nq_impact || "No objective NQ impact text supplied.")}</p>
+        </section>
+        <section class="section">
+          <h3>What this news means</h3>
+          <dl class="kv">
+            ${kvRow("Plain English", meaning.what_happened)}
+            ${kvRow("Timing", meaning.timing)}
+            ${kvRow("Calendar status", meaning.calendar && meaning.calendar.status)}
+            ${kvRow("Scheduled date", meaning.calendar && meaning.calendar.scheduled_date)}
+            ${kvRow("Retail takeaway", meaning.retail_takeaway)}
+          </dl>
         </section>
         <section class="section">
           <h3>Source and Time</h3>
@@ -1072,10 +1148,11 @@
         </section>
         <section class="section">
           <h3>Ranking Components</h3>
-          ${objectKv((row.rank || {}).components || {}, [["Importance", "importance"], ["Channel relevance", "channel_relevance"], ["Source authority", "source_authority"], ["Freshness", "freshness"], ["Provenance confidence", "provenance_confidence"], ["Data risk", "data_risk"]])}
+          ${rankRows((row.rank || {}).components || {})}
         </section>
         <section class="section">
           <h3>Provenance and Quality</h3>
+          <p class="impact">Known time means when the bot could have known the row. Validation pass means source/schema gates passed. Rights describes the license class. Archived raw means a raw source hash exists for audit.</p>
           ${objectKv(p, [["Raw SHA256", "raw_sha256"], ["Adapter SHA", "adapter_git_sha"], ["License", "license_class"], ["Host", "source_host"], ["Availability", "availability_basis"], ["Dedupe key", "dedupe_key"]])}
           <br>
           ${objectKv(q, [["Gate pass", "gate_pass"], ["Gate available", "gate_available"], ["PIT status", "pit_status"], ["Blocking failures", "blocking_failures"], ["Warnings", "warnings"]])}
