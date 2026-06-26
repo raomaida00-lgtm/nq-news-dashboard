@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NQ News Intelligence Dashboard</title>
+  <title>NQ Context Desk</title>
   <style>
     :root {
       --bg: #f4f6f8;
@@ -20,6 +20,8 @@
       --crimson-soft: #fdecef;
       --green: #1f7a55;
       --green-soft: #e6f5ee;
+      --violet: #6b4fb3;
+      --violet-soft: #f0ecfb;
       --slate: #49576a;
       --slate-soft: #eef2f6;
       --shadow: 0 18px 44px rgba(20, 26, 34, 0.10);
@@ -621,8 +623,8 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="eyebrow">NQ retail futures desk</div>
-        <h1>NQ News Intelligence Dashboard</h1>
+        <div class="eyebrow">Retail futures macro monitor</div>
+        <h1>NQ Context Desk</h1>
       </div>
       <div class="run-meta" id="runMeta">
         <span class="pill pill-edge">NO CERTIFIED EDGE</span>
@@ -632,26 +634,26 @@
   </header>
 
   <main class="dashboard">
-    <section class="triage" aria-label="Triage summary">
+    <section class="triage" aria-label="Today's read">
       <div class="tile tile-review">
         <div class="tile-label">Review Now</div>
         <div class="tile-value" id="kpiReview">0</div>
-        <div class="tile-note">Highest attention rows</div>
+        <div class="tile-note">Potential market-channel items</div>
       </div>
       <div class="tile tile-watch">
-        <div class="tile-label">Watch</div>
+        <div class="tile-label">Calendar Watch</div>
         <div class="tile-value" id="kpiWatch">0</div>
-        <div class="tile-note">Relevant context rows</div>
+        <div class="tile-note">Future dated items</div>
       </div>
       <div class="tile tile-clean">
-        <div class="tile-label">PIT Clean</div>
+        <div class="tile-label">Macro Context</div>
         <div class="tile-value" id="kpiPit">0</div>
-        <div class="tile-note">Known-at present</div>
+        <div class="tile-note">Rates, liquidity, policy, tech</div>
       </div>
       <div class="tile tile-coverage">
-        <div class="tile-label">Coverage</div>
+        <div class="tile-label">Data Trust</div>
         <div class="tile-value" id="kpiCoverage">0</div>
-        <div class="tile-note" id="coverageNote">Sources loaded</div>
+        <div class="tile-note" id="coverageNote">PIT/gate/source coverage</div>
       </div>
     </section>
 
@@ -703,15 +705,15 @@
 
       <aside class="side-panel" aria-label="Dashboard widgets">
         <section class="panel">
-          <h2>Attention Mix</h2>
+          <h2>NQ Relevance Ladder</h2>
           <div class="bar-list" id="attentionMix"></div>
         </section>
         <section class="panel">
-          <h2>Source Coverage</h2>
-          <div class="bar-list" id="sourceCoverage"></div>
+          <h2>Channel Heatmap</h2>
+          <div class="side-list" id="sourceCoverage"></div>
         </section>
         <section class="panel">
-          <h2>Model Coverage</h2>
+          <h2>Upcoming Tape</h2>
           <div class="side-list" id="modelCoverage"></div>
         </section>
         <section class="panel">
@@ -842,8 +844,8 @@
       const score = rankScore(row);
       const q = row.quality || {};
       if ((q.blocking_failures || []).length || q.gate_pass === false || q.pit_status !== "known_at_present") return "Data issue";
-      if (score >= 72 || (row.rank && row.rank.label === "Review now")) return "Review now";
-      if (score >= 52 || (row.rank && row.rank.label === "Watch")) return "Watch";
+      if ((row.importance || {}).label === "Critical" || score >= 72 || (row.rank && row.rank.label === "Review now")) return "Review now";
+      if ((row.importance || {}).label === "Important watch" || score >= 52 || (row.rank && row.rank.label === "Watch")) return "Watch";
       return "Context";
     }
 
@@ -894,6 +896,8 @@
         _status: rowStatus(row),
         _score: rankScore(row),
         _channels: Array.isArray(row.tags) ? row.tags : [],
+        _displayTitle: row.display_title || (row.event_interpretation && row.event_interpretation.display_title) || row.headline,
+        _contextBucket: row.context_bucket || (row.event_interpretation && row.event_interpretation.context_bucket) || "unclassified_context",
         _time: row.known_at || row.published_at || row.event_time || row.ingested_at || ""
       }));
     }
@@ -918,7 +922,9 @@
       const search = state.filters.search.trim().toLowerCase();
       let rows = state.rows.filter((row) => {
         const haystack = [
+          row._displayTitle,
           row.headline,
+          row.context_bucket,
           row.event_interpretation && row.event_interpretation.what_happened,
           row.event_interpretation && row.event_interpretation.timing,
           row.event_interpretation && row.event_interpretation.retail_takeaway,
@@ -969,21 +975,28 @@
     }
 
     function renderSideWidgets(rows) {
-      const mix = ["Review now", "Watch", "Context", "Data issue"].map((label) => [label, countWhere(rows, (r) => r._status === label)]);
+      const mix = [
+        ["Direct catalyst", countWhere(rows, (r) => r._contextBucket === "nq_direct_macro" || r._contextBucket === "nq_direct_corporate")],
+        ["Tradable watch", countWhere(rows, (r) => r._contextBucket === "nq_policy_sector")],
+        ["Macro backdrop", countWhere(rows, (r) => r._contextBucket === "market_context")],
+        ["Low-link context", countWhere(rows, (r) => r._contextBucket === "official_context_low_nq" || r._contextBucket === "unclassified_context")],
+        ["Data issue", countWhere(rows, (r) => r._contextBucket === "data_quality_issue" || r._status === "Data issue")]
+      ];
       renderBars(el.attentionMix, mix, "var(--amber)");
-      const sourceCounts = [...rows.reduce((m, row) => {
-        const key = row.source_name || row.source || "Unknown";
+      const channelCounts = [...rows.reduce((m, row) => {
+        const key = row._contextBucket || "unclassified_context";
         m.set(key, (m.get(key) || 0) + 1);
         return m;
       }, new Map()).entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
-      renderBars(el.sourceCoverage, sourceCounts, "var(--blue)");
-      const finbert = countWhere(rows, (r) => (r.finbert || {}).status === "available");
-      const beta = countWhere(rows, (r) => (r.beta || {}).status === "available");
-      el.modelCoverage.innerHTML = `
-        <span class="chip ${finbert ? "chip-green" : ""}">FinBERT ${finbert}/${rows.length}</span>
-        <span class="chip ${beta ? "chip-green" : ""}">Beta ${beta}/${rows.length}</span>
-        <span class="chip">Importance ${countWhere(rows, (r) => (r.importance || {}).status === "available")}/${rows.length}</span>
-      `;
+      el.sourceCoverage.innerHTML = channelCounts.map(([label, value]) => `<span class="chip chip-blue">${escapeHtml(label.replaceAll("_", " "))} ${value}</span>`).join("");
+      const upcoming = rows
+        .filter((r) => ((r.event_interpretation || {}).calendar || {}).status === "upcoming")
+        .sort((a, b) => String(((a.event_interpretation || {}).calendar || {}).scheduled_date || "").localeCompare(String(((b.event_interpretation || {}).calendar || {}).scheduled_date || "")))
+        .slice(0, 6);
+      el.modelCoverage.innerHTML = upcoming.length ? upcoming.map((r) => {
+        const cal = ((r.event_interpretation || {}).calendar || {});
+        return `<span class="chip chip-amber">${escapeHtml(cal.scheduled_date || "upcoming")} - ${escapeHtml(r._displayTitle)}</span>`;
+      }).join("") : '<span class="chip">No upcoming items in current rows</span>';
       el.trustStack.innerHTML = `
         <span class="chip chip-green">PIT ${countWhere(rows, (r) => (r.quality || {}).pit_status === "known_at_present")}</span>
         <span class="chip chip-green">Gate pass ${countWhere(rows, (r) => (r.quality || {}).gate_pass === true)}</span>
@@ -995,6 +1008,10 @@
       const status = row._status;
       const score = Math.round(row._score);
       const meaning = row.event_interpretation || {};
+      const importance = row.importance || {};
+      const meaningBullets = row.meaning_bullets || meaning.meaning_bullets || [];
+      const nqBullets = row.nq_context_bullets || meaning.nq_context_bullets || [];
+      const worldBullets = row.world_context_bullets || meaning.world_context_bullets || [];
       const chips = (row._channels || []).slice(0, 7).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("");
       const url = row.source_url ? `<a class="row-action" href="${escapeHtml(row.source_url)}" target="_blank" rel="noopener">Source</a>` : "";
       return `
@@ -1003,36 +1020,37 @@
           <div class="card-body">
             <div class="card-head">
               <div>
-                <h2 class="headline">${escapeHtml(row.headline || "Untitled row")}</h2>
+                <h2 class="headline">${escapeHtml(row._displayTitle || "Untitled row")}</h2>
                 <div class="source-row">
                   <span>${escapeHtml(row.source_name || row.source || "Unknown source")}</span>
                   <span>${escapeHtml(row.dataset || "unknown dataset")}</span>
+                  <span>${escapeHtml((row._contextBucket || "context").replaceAll("_", " "))}</span>
                   <span>${escapeHtml(relativeAge(row._time))}</span>
                 </div>
               </div>
               <div class="score-block">
-                <div class="score">${score}</div>
-                <div class="score-caption">Attention</div>
+                <div class="score">${escapeHtml(importance.label || status)}</div>
+                <div class="score-caption">${score} attention</div>
               </div>
             </div>
             <div class="meaning-box">
-              <div class="meaning-label">What this news means</div>
-              <p class="meaning-text">${escapeHtml(meaning.what_happened || "No plain-English explanation supplied yet.")}</p>
-              <div class="source-row">
-                <span>${escapeHtml(meaning.timing || "Timing not supplied")}</span>
-                <span>${escapeHtml(meaning.retail_takeaway || "Use as context until a concrete market channel is verified.")}</span>
-              </div>
+              <div class="meaning-label">What changed</div>
+              ${renderBullets(meaningBullets.slice(0, 3))}
             </div>
             <div class="meaning-box">
-              <div class="meaning-label">Why it matters for NQ</div>
-              <p class="meaning-text">${escapeHtml(meaning.why_it_matters_for_nq || row.objective_nq_impact || "No objective NQ impact text supplied.")}</p>
+              <div class="meaning-label">Why NQ cares</div>
+              ${renderBullets(nqBullets.slice(0, 3))}
+            </div>
+            <div class="meaning-box">
+              <div class="meaning-label">Context added</div>
+              ${renderBullets(worldBullets.slice(0, 3))}
             </div>
             <div class="chip-row">
               <span class="chip ${statusChip(status)}">${escapeHtml(status)}</span>
               ${chips || '<span class="chip">No channel tags</span>'}
             </div>
             <div class="evidence-row">
-              <span class="metric">Importance <b>${escapeHtml((row.importance || {}).tier || "UNRANKED")}</b></span>
+              <span class="metric">Importance <b>${escapeHtml(importance.tier || "derived")}</b></span>
               ${modelMetric(row, "finbert")}
               ${modelMetric(row, "beta")}
               <span class="metric">Known <b>${escapeHtml(formatTime(row.known_at))}</b></span>
@@ -1072,6 +1090,12 @@
       return `<dl class="kv">${labels.map(([label, key]) => kvRow(label, obj ? obj[key] : null)).join("")}</dl>`;
     }
 
+    function renderBullets(items) {
+      const safe = (items || []).filter(Boolean);
+      if (!safe.length) return '<div class="chip-row"><span class="chip">No concise context available yet</span></div>';
+      return `<div class="chip-row">${safe.map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>`;
+    }
+
     function rankMeaning(key, value) {
       const n = Number(value);
       if (!Number.isFinite(n)) return "not available";
@@ -1102,7 +1126,7 @@
     }
 
     function openDrawer(row) {
-      el.drawerTitle.textContent = row.headline || "Row detail";
+      el.drawerTitle.textContent = row._displayTitle || row.headline || "Row detail";
       const f = row.finbert || {};
       const b = row.beta || {};
       const p = row.provenance || {};
@@ -1119,13 +1143,11 @@
         </section>
         <section class="section">
           <h3>What this news means</h3>
-          <dl class="kv">
-            ${kvRow("Plain English", meaning.what_happened)}
-            ${kvRow("Timing", meaning.timing)}
-            ${kvRow("Calendar status", meaning.calendar && meaning.calendar.status)}
-            ${kvRow("Scheduled date", meaning.calendar && meaning.calendar.scheduled_date)}
-            ${kvRow("Retail takeaway", meaning.retail_takeaway)}
-          </dl>
+          ${renderBullets(row.meaning_bullets || meaning.meaning_bullets)}
+          <br>
+          ${renderBullets(row.nq_context_bullets || meaning.nq_context_bullets)}
+          <br>
+          ${renderBullets(row.world_context_bullets || meaning.world_context_bullets)}
         </section>
         <section class="section">
           <h3>Source and Time</h3>
@@ -1135,12 +1157,13 @@
             ${kvRow("Published", formatTime(row.published_at || row.event_time))}
             ${kvRow("Known at", formatTime(row.known_at))}
             ${kvRow("Known evidence", row.known_at_evidence)}
+            ${kvRow("Raw headline", row.headline)}
             ${row.source_url ? `<dt>URL</dt><dd><a href="${escapeHtml(row.source_url)}" target="_blank" rel="noopener">${escapeHtml(row.source_url)}</a></dd>` : kvRow("URL", null)}
           </dl>
         </section>
         <section class="section">
           <h3>Model Facts</h3>
-          ${objectKv(row.importance || {}, [["Importance score", "score"], ["Importance tier", "tier"], ["Rubric", "rubric_version"], ["Top features", "top_features"]])}
+          ${objectKv(row.importance || {}, [["Importance score", "score"], ["Importance label", "label"], ["Importance tier", "tier"], ["Status", "status"], ["Reason", "reason"], ["Rubric", "rubric_version"]])}
           <br>
           ${objectKv(f, [["FinBERT status", "status"], ["Polarity", "polarity"], ["Intensity", "intensity"], ["P positive", "p_pos"], ["P negative", "p_neg"], ["P neutral", "p_neu"], ["Model", "model"]])}
           <br>
